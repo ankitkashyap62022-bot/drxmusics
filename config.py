@@ -36,9 +36,10 @@ UPSTREAM_REPO = getenv(
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN", "")  
 
-# 🚫 PROMOTION LINKS REMOVED (Koi error nahi aayega ab)
-SUPPORT_CHANNEL = getenv("SUPPORT_CHAT", "")
-SUPPORT_GROUP = getenv("SUPPORT_GROUP", "")
+# 🚫 PROMOTION LINKS REMOVED (Ab button aayenge 100%)
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/MONSTER_FUCK_BITCHES")
+SUPPORT_GROUP = getenv("SUPPORT_GROUP", "https://t.me/FUCK_BY_REFLEX")
+
 
 # Set this to True if you want the assistant to automatically leave chats after an interval
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
