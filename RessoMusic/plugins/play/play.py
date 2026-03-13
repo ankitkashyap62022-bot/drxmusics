@@ -25,9 +25,42 @@ from RessoMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
 
+import urllib.parse
+import aiohttp
+
+JIOSAAVN_CACHE = {}
+JIOSAAVN_API = "https://jiosavan-lilac.vercel.app/api/search/songs?query="
+
+async def jiosaavn_play_logic(query):
+    cache_key = query.lower().strip()
+    if cache_key in JIOSAAVN_CACHE:
+        return JIOSAAVN_CACHE[cache_key]
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(JIOSAAVN_API + urllib.parse.quote(query), timeout=5) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    songs = data.get("data", {}).get("results", []) or data.get("results", [])
+                    if songs:
+                        song = songs[0]
+                        stream_url = song["downloadUrl"][-1]["url"] if "downloadUrl" in song else song["downloadUrl"][-1]["link"]
+                        title = song["name"].replace("&quot;", '"').replace("&#039;", "'")
+                        thumb = song["image"][-1]["url"] if "image" in song else song["image"][-1]["link"]
+                        duration_sec = song.get("duration", 0)
+                        mins = int(duration_sec) // 60
+                        secs = int(duration_sec) % 60
+                        duration_str = f"{mins}:{secs:02d}"
+                        
+                        result_tuple = (stream_url, title, thumb, duration_str)
+                        JIOSAAVN_CACHE[cache_key] = result_tuple
+                        return stream_url, title, thumb, duration_str
+    except:
+        pass
+    return None, None, None, None
+# ==========================================
+
 @app.on_message(
     filters.command(["play", "vplay", "cplay", "cvplay", "playforce", "vplayforce", "cplayforce", "cvplayforce"], prefixes=["/", "!", "%", ",", "", ".", "@"])
- 
     & filters.group
     & ~BANNED_USERS
 )
@@ -327,11 +360,43 @@ async def play_commnd(
         query = message.text.split(None, 1)[1]
         if "-v" in query:
             query = query.replace("-v", "")
+            
+        
+        if str(playmode) == "Direct" and not video:
+            stream_url, js_title, js_thumb, js_dur = await jiosaavn_play_logic(query)
+            if stream_url:
+                details = {
+                    "title": js_title,
+                    "link": stream_url,
+                    "path": stream_url,
+                    "dur": js_dur,
+                    "duration_min": js_dur,
+                }
+                try:
+                    await stream(
+                        _,
+                        mystic,
+                        user_id,
+                        details,
+                        chat_id,
+                        user_name,
+                        message.chat.id,
+                        video=video,
+                        streamtype="telegram", 
+                        forceplay=fplay,
+                    )
+                    await mystic.delete()
+                    return await play_logs(message, streamtype="JioSaavn")
+                except Exception:
+                    pass 
+        # ========================================================
+
         try:
             details, track_id = await YouTube.track(query)
         except:
             return await mystic.edit_text(_["play_3"])
         streamtype = "youtube"
+        
     if str(playmode) == "Direct":
         if not plist_type:
             if details["duration_min"]:
@@ -433,8 +498,7 @@ async def play_commnd(
                     reply_markup=InlineKeyboardMarkup(buttons),
                 )
                 return await play_logs(message, streamtype=f"URL Searched Inline")
-
-
+                
 @app.on_callback_query(filters.regex("MusicStream") & ~BANNED_USERS)
 @languageCB
 async def play_music(client, CallbackQuery, _):
@@ -667,6 +731,7 @@ async def slider_queries(client, CallbackQuery, _):
         return await CallbackQuery.edit_message_media(
             media=med, reply_markup=InlineKeyboardMarkup(buttons)
         )
+
 
 
 
