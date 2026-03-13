@@ -139,6 +139,10 @@ def queue_markup(
                 text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data="close",
             ),
+        ],
+        [
+            InlineKeyboardButton(text="🍻 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🍻", url=SUPPORT_URL),
+            InlineKeyboardButton(text="👑 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 👑", url=MY_LORD_URL),
         ]
     ]
     dur = [
@@ -158,6 +162,10 @@ def queue_markup(
                 callback_data="close",
             ),
         ],
+        [
+            InlineKeyboardButton(text="🍻 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🍻", url=SUPPORT_URL),
+            InlineKeyboardButton(text="👑 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 👑", url=MY_LORD_URL),
+        ]
     ]
     upl = InlineKeyboardMarkup(not_dur if DURATION == "Unknown" else dur)
     return upl
