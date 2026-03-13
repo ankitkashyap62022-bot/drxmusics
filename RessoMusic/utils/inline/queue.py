@@ -19,7 +19,7 @@ def track_markup(_, videoid, user_id, channel, fplay):
         ],
         [
             InlineKeyboardButton(
-                text="[ ☠ S Y S . C L O S E ☠ ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data=f"forceclose {videoid}|{user_id}",
             )
         ],
@@ -29,18 +29,18 @@ def track_markup(_, videoid, user_id, channel, fplay):
 def stream_markup(_, videoid, chat_id):
     buttons = [
         [
-            InlineKeyboardButton(text="▶ P L A Y", callback_data=f"ADMIN Resume|{chat_id}"),
-            InlineKeyboardButton(text="❚❚ H A L T", callback_data=f"ADMIN Pause|{chat_id}"),
-            InlineKeyboardButton(text="↻ L O O P", callback_data=f"ADMIN Replay|{chat_id}"),
-            InlineKeyboardButton(text="⏭ N E X T", callback_data=f"ADMIN Skip|{chat_id}"),
-            InlineKeyboardButton(text="⏹ K I L L", callback_data=f"ADMIN Stop|{chat_id}"),
+            InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
+            InlineKeyboardButton(text="II", callback_data=f"ADMIN Pause|{chat_id}"),
+            InlineKeyboardButton(text="↻", callback_data=f"ADMIN Replay|{chat_id}"),
+            InlineKeyboardButton(text="‣‣I", callback_data=f"ADMIN Skip|{chat_id}"),
+            InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ],
         [
-            InlineKeyboardButton(text="[ ⏏️ T E R M I N A T E ]", callback_data="close"),
+            InlineKeyboardButton(text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close"),
         ],
     ]
     return buttons
@@ -58,12 +58,12 @@ def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
-                text="[ ⏏️ T E R M I N A T E ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data=f"forceclose {videoid}|{user_id}",
             ),
         ],
@@ -79,12 +79,12 @@ def livestream_markup(_, videoid, user_id, mode, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
-                text="[ ⏏️ T E R M I N A T E ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data=f"forceclose {videoid}|{user_id}",
             ),
         ],
@@ -106,15 +106,15 @@ def slider_markup(_, videoid, user_id, query, query_type, channel, fplay):
         ],
         [
             InlineKeyboardButton(
-                text="◁ P R E V",
+                text="◁",
                 callback_data=f"slider B|{query_type}|{query}|{user_id}|{channel}|{fplay}",
             ),
             InlineKeyboardButton(
-                text="[ ⏏️ T E R M I N A T E ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data=f"forceclose {query}|{user_id}",
             ),
             InlineKeyboardButton(
-                text="N E X T ▷",
+                text="▷",
                 callback_data=f"slider F|{query_type}|{query}|{user_id}|{channel}|{fplay}",
             ),
         ],
@@ -136,13 +136,13 @@ def queue_markup(
                 callback_data=f"GetQueued {CPLAY}|{videoid}",
             ),
             InlineKeyboardButton(
-                text="[ ⏏️ T E R M I N A T E ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data="close",
             ),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ]
     ]
     dur = [
@@ -158,13 +158,13 @@ def queue_markup(
                 callback_data=f"GetQueued {CPLAY}|{videoid}",
             ),
             InlineKeyboardButton(
-                text="[ ⏏️ T E R M I N A T E ]",
+                text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                 callback_data="close",
             ),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ]
     ]
     upl = InlineKeyboardMarkup(not_dur if DURATION == "Unknown" else dur)
@@ -175,11 +175,11 @@ def queue_back_markup(_, CPLAY):
         [
             [
                 InlineKeyboardButton(
-                    text="🔙 B A C K . E X E",
+                    text="🔙 ʙ ᴀ ᴄ ᴋ 🔙",
                     callback_data=f"queue_back_timer {CPLAY}",
                 ),
                 InlineKeyboardButton(
-                    text="[ ⏏️ T E R M I N A T E ]",
+                    text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑",
                     callback_data="close",
                 ),
             ]
@@ -190,17 +190,17 @@ def queue_back_markup(_, CPLAY):
 def aq_markup(_, chat_id):
     buttons = [
         [
-            InlineKeyboardButton(text="▶ P L A Y", callback_data=f"ADMIN Resume|{chat_id}"),
-            InlineKeyboardButton(text="❚❚ H A L T", callback_data=f"ADMIN Pause|{chat_id}"),
-            InlineKeyboardButton(text="⏭ N E X T", callback_data=f"ADMIN Skip|{chat_id}"),
-            InlineKeyboardButton(text="⏹ K I L L", callback_data=f"ADMIN Stop|{chat_id}"),
+            InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
+            InlineKeyboardButton(text="II", callback_data=f"ADMIN Pause|{chat_id}"),
+            InlineKeyboardButton(text="‣‣I", callback_data=f"ADMIN Skip|{chat_id}"),
+            InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
         [
-            InlineKeyboardButton(text="🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url=SUPPORT_URL),
-            InlineKeyboardButton(text="👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
+            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
         ],
         [
-            InlineKeyboardButton(text="[ ⏏️ T E R M I N A T E ]", callback_data="close"),
+            InlineKeyboardButton(text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close"),
         ],
     ]
     return buttons
