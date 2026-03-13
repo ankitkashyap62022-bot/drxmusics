@@ -36,8 +36,8 @@ def stream_markup(_, videoid, chat_id):
             InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
         [
-            InlineKeyboardButton(text="🌸 s ᴜ ᴘ ᴘ ᴏ ʀ ᴛ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🍻 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🍻", url=SUPPORT_URL),
+            InlineKeyboardButton(text="👑 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 👑", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close"),
@@ -58,8 +58,8 @@ def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 s ᴜ ᴘ ᴘ ᴏ ʀ ᴛ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🍻 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🍻", url=SUPPORT_URL),
+            InlineKeyboardButton(text="👑 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 👑", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
@@ -79,8 +79,8 @@ def livestream_markup(_, videoid, user_id, mode, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 s ᴜ ᴘ ᴘ ᴏ ʀ ᴛ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="🍻 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🍻", url=SUPPORT_URL),
+            InlineKeyboardButton(text="👑 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 👑", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
