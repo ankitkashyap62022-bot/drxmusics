@@ -366,7 +366,9 @@ class Call(PyTgCalls):
                 db[chat_id][0]["speed_path"] = None
                 db[chat_id][0]["speed"] = 1.0
             video = True if str(streamtype) == "video" else False
-            if "live_" in queued:
+            
+            # 🔥 YAHAN PE FIX KIYA HAI 🔥
+            if queued and "live_" in queued:
                 n, link = await YouTube.video(videoid, True)
                 if n == 0:
                     return await app.send_message(
@@ -406,7 +408,7 @@ class Call(PyTgCalls):
                 )
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "tg"
-            elif "vid_" in queued:
+            elif queued and "vid_" in queued:
                 mystic = await app.send_message(original_chat_id, _["call_7"])
                 try:
                     file_path, direct = await YouTube.download(
@@ -453,7 +455,7 @@ class Call(PyTgCalls):
                 )
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "stream"
-            elif "index_" in queued:
+            elif queued and "index_" in queued:
                 stream = (
                     AudioVideoPiped(
                         videoid,
