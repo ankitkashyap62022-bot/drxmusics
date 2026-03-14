@@ -1,8 +1,10 @@
 import random
 import string
 import urllib.parse
-import aiohttp
+import asyncio
 import os
+import requests
+import aiohttp
 
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto, Message
@@ -12,7 +14,7 @@ import config
 from RessoMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
 from RessoMusic.core.call import AMBOTOP
 from RessoMusic.misc import db
-# 🔥 MONGODB DATABASE IMPORT KIYA HAI 🔥
+# 🔥 MONGODB DATABASE 🔥
 from RessoMusic.core.mongo import mongodb
 from RessoMusic.utils import seconds_to_min, time_to_seconds
 from RessoMusic.utils.channelplay import get_channeplayCB
@@ -31,7 +33,7 @@ from RessoMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
 # ==========================================
-# 🦋 PREMIUM POOKIE EMOJIS (Random Generator)
+# 🦋 PREMIUM POOKIE EMOJIS
 # ==========================================
 P_EMOJIS = [
     "<emoji id=6151981777490548710>🦋</emoji>", "<emoji id=6152433938762570514>🎀</emoji>",
@@ -60,27 +62,34 @@ def get_custom_buttons():
     ]
 
 # ==========================================
-# 🎨 CUSTOM THUMBNAIL DATABASE LOGIC (/setply)
+# 🎨 CUSTOM THUMBNAIL LOGIC (/setply)
 # ==========================================
 custom_thumb_db = mongodb.custom_thumb
 
 async def get_cthumb():
-    data = await custom_thumb_db.find_one({"_id": "custom_thumbnail"})
-    return data["url"] if data else None
-
-# 🔥 AUTO TELEGRAPH UPLOADER 🔥
-async def upload_to_telegraph(file_path):
     try:
-        async with aiohttp.ClientSession() as session:
-            with open(file_path, "rb") as f:
-                form = aiohttp.FormData()
-                form.add_field("file", f, filename=os.path.basename(file_path))
-                async with session.post("https://telegra.ph/upload", data=form) as response:
-                    res = await response.json()
-                    if isinstance(res, list) and "src" in res[0]:
-                        return "https://telegra.ph" + res[0]["src"]
-    except Exception:
+        data = await custom_thumb_db.find_one({"_id": "custom_thumbnail"})
+        return data["url"] if data else None
+    except:
         return None
+
+# 🔥 TELEGRAPH UPLOADER 🔥
+def upload_telegraph_sync(file_path):
+    try:
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                "https://telegra.ph/upload", 
+                files={"file": ("photo.jpg", f, "image/jpeg")}
+            )
+        res = response.json()
+        if isinstance(res, list) and "src" in res[0]:
+            return "https://telegra.ph" + res[0]["src"]
+    except Exception as e:
+        print(f"Telegraph Upload Error: {e}")
+    return None
+
+async def upload_to_telegraph(file_path):
+    return await asyncio.to_thread(upload_telegraph_sync, file_path)
 
 @app.on_message(filters.command("setply") & filters.user(config.OWNER_ID))
 async def set_ply_cmd(client, message):
@@ -91,20 +100,15 @@ async def set_ply_cmd(client, message):
 
     mystic = await message.reply_text(f"{get_rand_emo()} 🌸 𝖯𝗋𝗈𝖼𝖾𝗌𝗌𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖯𝗁𝗈𝗍𝗈 𝖳𝗈 𝖱𝖤𝖥𝖫𝖤𝖷 𝖲𝖾𝗋𝗏𝖾𝗋...")
     
-    # 1. Download Photo
     local_path = await client.download_media(message.reply_to_message.photo.file_id)
-    
-    # 2. Upload to Telegraph
     telegraph_url = await upload_to_telegraph(local_path)
     
-    # Cleanup local file
     if os.path.exists(local_path):
         os.remove(local_path)
         
     if not telegraph_url:
         return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
 
-    # 3. Save proper URL to MongoDB
     await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": telegraph_url}}, upsert=True)
 
     await mystic.edit_text(
@@ -112,7 +116,7 @@ async def set_ply_cmd(client, message):
     )
 
 # ==========================================
-# 🎵 JIOSAAVN API LOGIC
+# 🎵 JIOSAAVN API LOGIC (RESTORED!)
 # ==========================================
 JIOSAAVN_CACHE = {}
 JIOSAAVN_API = "https://jiosavan-lilac.vercel.app/api/search/songs?query="
@@ -170,7 +174,6 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
 
     cthumb = await get_cthumb() # Get DB Thumbnail URL
 
-    # Handle Audio/Video from Telegram...
     if audio_telegram:
         if audio_telegram.file_size > 104857600:
             return await mystic.edit_text(f"{get_rand_emo()} 𝖥𝗂𝗅𝖾 𝖳𝗈𝗈 𝖡𝗂𝗀 𝖡𝖺𝖻𝗒! 𝖲𝖾𝗇𝖽 𝖲𝗆𝖺𝗅𝗅𝖾𝗋 𝖮𝗇𝖾. 🥺")
@@ -208,6 +211,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
         if "-v" in query:
             query = query.replace("-v", "")
 
+        # 🔥 JIOSAAVN PLAY LOGIC RESTORED 🔥
         if str(playmode) == "Direct" and not video:
             stream_url, js_title, js_thumb, js_dur = await jiosaavn_play_logic(query)
             if stream_url:
@@ -226,6 +230,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
                 except Exception:
                     pass 
 
+        # YT Fallback if JioSaavn fails
         try:
             details, track_id = await YouTube.track(query)
             details["thumb"] = cthumb if cthumb else details["thumb"]
