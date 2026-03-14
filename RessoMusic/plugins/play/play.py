@@ -73,8 +73,22 @@ async def get_cthumb():
     except:
         return None
 
-# 🔥 TELEGRAPH UPLOADER 🔥
-def upload_telegraph_sync(file_path):
+# 🔥 MULTI-CLOUD UPLOADER (ANTI-BLOCK SYSTEM) 🔥
+def upload_image_sync(file_path):
+    # 1. Try Catbox.moe (Fastest & Never Blocked)
+    try:
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                "https://catbox.moe/user/api.php",
+                data={"reqtype": "fileupload"},
+                files={"fileToUpload": f}
+            )
+        if response.status_code == 200 and response.text.startswith("http"):
+            return response.text.strip()
+    except Exception as e:
+        print(f"Catbox Error: {e}")
+
+    # 2. Try Telegraph as Fallback
     try:
         with open(file_path, "rb") as f:
             response = requests.post(
@@ -85,11 +99,12 @@ def upload_telegraph_sync(file_path):
         if isinstance(res, list) and "src" in res[0]:
             return "https://telegra.ph" + res[0]["src"]
     except Exception as e:
-        print(f"Telegraph Upload Error: {e}")
+        print(f"Telegraph Error: {e}")
+        
     return None
 
-async def upload_to_telegraph(file_path):
-    return await asyncio.to_thread(upload_telegraph_sync, file_path)
+async def upload_to_cloud(file_path):
+    return await asyncio.to_thread(upload_image_sync, file_path)
 
 @app.on_message(filters.command("setply") & filters.user(config.OWNER_ID))
 async def set_ply_cmd(client, message):
@@ -100,19 +115,19 @@ async def set_ply_cmd(client, message):
 
     mystic = await message.reply_text(f"{get_rand_emo()} 🌸 𝖯𝗋𝗈𝖼𝖾𝗌𝗌𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖯𝗁𝗈𝗍𝗈 𝖳𝗈 𝖱𝖤𝖥𝖫𝖤𝖷 𝖲𝖾𝗋𝗏𝖾𝗋...")
     
-    local_path = await client.download_media(message.reply_to_message.photo.file_id)
-    telegraph_url = await upload_to_telegraph(local_path)
+    local_path = await client.download_media(message.reply_to_message)
+    image_url = await upload_to_cloud(local_path)
     
     if os.path.exists(local_path):
         os.remove(local_path)
         
-    if not telegraph_url:
-        return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
+    if not image_url:
+        return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖲𝖾𝗋𝗏𝖾𝗋𝗌 𝖬𝗂𝗀𝗁𝗍 𝖡𝖾 𝖣𝗈𝗐𝗇! 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
 
-    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": telegraph_url}}, upsert=True)
+    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": image_url}}, upsert=True)
 
     await mystic.edit_text(
-        f"{get_rand_emo()} 𝘠𝘢𝘺! 𝘊𝘶𝘴𝘵𝘰𝘮 𝘛𝘩𝘶𝘮𝘣𝘯𝘢𝘪𝘭 𝘚𝘦𝘵 𝘚𝘶𝘤𝘤𝘦𝘴𝘴𝘧𝘶𝘭𝘭𝘺! 𝘙𝘌𝘍𝘓𝘌𝘟 𝘚𝘺𝘴𝘵𝘦𝘮 𝘜𝘱𝘥𝘢𝘵𝘦𝘥. 😈\n\n(Ab Search aur Auto-Next dono pe yahi aayega!)"
+        f"{get_rand_emo()} 𝘠𝘢𝘺! 𝘊𝘶𝘴𝘵𝘰𝘮 𝘛𝘩𝘶𝘮𝘣𝘯𝘢𝘪𝘭 𝘚𝘦𝘵 𝘚𝘶𝘤𝘤𝘦𝘴𝘴𝘧𝘶𝘭𝘭𝘺! 𝘙𝘌𝘍𝘓𝘌𝘟 𝘚𝘺𝘴𝘵𝘦𝘮 𝘜𝘱𝘥𝘢𝘵𝘦𝘥. 😈\n\n(🔗 𝖴𝖱𝖫: {image_url})"
     )
 
 # ==========================================
