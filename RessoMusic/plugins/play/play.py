@@ -2,6 +2,7 @@ import random
 import string
 import urllib.parse
 import aiohttp
+import os
 
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto, Message
@@ -65,7 +66,21 @@ custom_thumb_db = mongodb.custom_thumb
 
 async def get_cthumb():
     data = await custom_thumb_db.find_one({"_id": "custom_thumbnail"})
-    return data["file_id"] if data else None
+    return data["url"] if data else None
+
+# 🔥 AUTO TELEGRAPH UPLOADER 🔥
+async def upload_to_telegraph(file_path):
+    try:
+        async with aiohttp.ClientSession() as session:
+            with open(file_path, "rb") as f:
+                form = aiohttp.FormData()
+                form.add_field("file", f, filename=os.path.basename(file_path))
+                async with session.post("https://telegra.ph/upload", data=form) as response:
+                    res = await response.json()
+                    if isinstance(res, list) and "src" in res[0]:
+                        return "https://telegra.ph" + res[0]["src"]
+    except Exception:
+        return None
 
 @app.on_message(filters.command("setply") & filters.user(config.OWNER_ID))
 async def set_ply_cmd(client, message):
@@ -73,12 +88,26 @@ async def set_ply_cmd(client, message):
         return await message.reply_text(
             f"{get_rand_emo()} 𝘉𝘢𝘣𝘺, 𝘒𝘪𝘴𝘪 𝘗𝘩𝘰𝘵𝘰 𝘗𝘢𝘳 𝘙𝘦𝘱𝘭𝘺 𝘒𝘢𝘳𝘬𝘦 /𝘴𝘦𝘵𝘱𝘭𝘺 𝘓𝘪𝘬𝘩𝘰! 🎀"
         )
+
+    mystic = await message.reply_text(f"{get_rand_emo()} 🌸 𝖯𝗋𝗈𝖼𝖾𝗌𝗌𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖯𝗁𝗈𝗍𝗈 𝖳𝗈 𝖱𝖤𝖥𝖫𝖤𝖷 𝖲𝖾𝗋𝗏𝖾𝗋...")
     
-    file_id = message.reply_to_message.photo.file_id
-    # Save to MongoDB
-    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"file_id": file_id}}, upsert=True)
+    # 1. Download Photo
+    local_path = await client.download_media(message.reply_to_message.photo.file_id)
     
-    await message.reply_text(
+    # 2. Upload to Telegraph
+    telegraph_url = await upload_to_telegraph(local_path)
+    
+    # Cleanup local file
+    if os.path.exists(local_path):
+        os.remove(local_path)
+        
+    if not telegraph_url:
+        return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
+
+    # 3. Save proper URL to MongoDB
+    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": telegraph_url}}, upsert=True)
+
+    await mystic.edit_text(
         f"{get_rand_emo()} 𝘠𝘢𝘺! 𝘊𝘶𝘴𝘵𝘰𝘮 𝘛𝘩𝘶𝘮𝘣𝘯𝘢𝘪𝘭 𝘚𝘦𝘵 𝘚𝘶𝘤𝘤𝘦𝘴𝘴𝘧𝘶𝘭𝘭𝘺! 𝘙𝘌𝘍𝘓𝘌𝘟 𝘚𝘺𝘴𝘵𝘦𝘮 𝘜𝘱𝘥𝘢𝘵𝘦𝘥. 😈\n\n(Ab Search aur Auto-Next dono pe yahi aayega!)"
     )
 
@@ -125,11 +154,11 @@ async def jiosaavn_play_logic(query):
 )
 @PlayWrapper
 async def play_commnd(client, message: Message, _, chat_id, video, channel, playmode, url, fplay):
-    
+
     mystic = await message.reply_text(
         f"{get_rand_emo()} 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖲𝗈𝗇𝗀 𝖡𝖺𝖻𝗒... 𝖯𝗅𝖾𝖺𝗌𝖾 𝖶𝖺𝗂𝗍 𝖬𝗒 𝖫𝗈𝗋𝖽 😈"
     )
-    
+
     plist_id = None
     slider = None
     plist_type = None
@@ -139,7 +168,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
     audio_telegram = (message.reply_to_message.audio or message.reply_to_message.voice) if message.reply_to_message else None
     video_telegram = (message.reply_to_message.video or message.reply_to_message.document) if message.reply_to_message else None
 
-    cthumb = await get_cthumb() # Get DB Thumbnail
+    cthumb = await get_cthumb() # Get DB Thumbnail URL
 
     # Handle Audio/Video from Telegram...
     if audio_telegram:
@@ -167,7 +196,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
             streamtype = "youtube"
             details["thumb"] = cthumb if cthumb else details["thumb"]
             cap = f"{get_rand_emo()} **{details['title']}**"
-        
+
     else:
         if len(message.command) < 2:
             return await mystic.edit_text(
