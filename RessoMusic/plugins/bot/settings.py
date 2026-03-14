@@ -1,3 +1,4 @@
+import random
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from pyrogram.errors import MessageNotModified
@@ -34,18 +35,64 @@ from RessoMusic.utils.inline.settings import (
     setting_markup,
     vote_mode_markup,
 )
-from RessoMusic.utils.inline.start import private_panel
 from config import BANNED_USERS, OWNER_ID
 
+# ================================
+#      PREMIUM EMOJIS (14 EIDS)
+# ================================
+EIDS = [
+    6151981777490548710, 6152433938762570514, 6152142357727811958, 6152420392435718199,
+    6152351737383493164, 5039727604517570274, 5042302287087666158, 6309745512639633760,
+    6307798999101347420, 6307346833534359338, 6307821174017496029, 6307373208928531138,
+    6307358404176254008, 6111778259374971023
+]
 
+def get_vip():
+    return f'<emoji id="{random.choice(EIDS)}">🦋</emoji>'
+
+# YORSA STYLE PRIVATE PANEL BUTTONS (For Back Button Fix)
+def anu_private_panel(bot_username):
+    return [
+        [
+            InlineKeyboardButton(text="↪ ˹ ᴛ ᴀ ᴩ  ᴛ ᴏ  ꜱ ᴇ ᴇ  ᴍ ᴀ ɢ ɪ ᴄ ˼ ↩", url=f"https://t.me/{bot_username}?startgroup=true")
+        ],
+        [
+            InlineKeyboardButton(text="💬 ˹ ꜱ ᴜ ᴩ ᴩ ᴏ ʀ ᴛ ˼", url="https://t.me/BMW_USERBOT_II"),
+            InlineKeyboardButton(text="🐱 ˹ ᴍ ʏ  ʜ ᴏ ᴍ ᴇ ˼", url="https://t.me/FUCK_BY_REFLEX")
+        ],
+        [
+            InlineKeyboardButton(text="🤷‍♂️ ˹ ʜ ᴇ ʟ ᴩ  ᴀ ɴ ᴅ  ᴄ ᴏ ᴍ ᴍ ᴀ ɴ ᴅ ꜱ ˼", callback_data="anu_help_menu")
+        ],
+        [
+            InlineKeyboardButton(text="🕶 ˹ ᴍ ʏ  ᴍ ᴀ ꜱ ᴛ ᴇ ʀ 👑 ˼", url="https://t.me/MONSTER_FUCK_BITCHES")
+        ]
+    ]
+
+# ================================
+#      /SETTINGS COMMAND
+# ================================
 @app.on_message(
     filters.command(["settings", "setting"]) & filters.group & ~BANNED_USERS
 )
 @language
 async def settings_mar(client, message: Message, _):
     buttons = setting_markup(_)
+    anu_settings = (
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} **ᴀɴᴜ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴀɪɴꜰʀᴀᴍᴇ**\n"
+        f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+        f"┠ ɢʀᴏᴜᴩ: {message.chat.title}\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} ᴄᴏɴꜰɪɢᴜʀᴇ ᴀɴᴜ ᴍᴀᴛʀɪx:\n"
+        f"┠ ⇛ ᴜꜱᴇ ᴛʜᴇ ʙᴜᴛᴛᴏɴꜱ ʙᴇʟᴏᴡ ᴛᴏ\n"
+        f"┠ ⇛ ᴄᴜꜱᴛᴏᴍɪᴢᴇ ᴩʟᴀʏᴍᴏᴅᴇ, ᴀᴜᴛʜ\n"
+        f"┠ ⇛ ᴜꜱᴇʀꜱ ᴀɴᴅ ᴠᴏᴛᴇ-ꜱᴋɪᴩ ᴍᴏᴅᴇꜱ.\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┠ 🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ**"
+    )
     await message.reply_text(
-        _["setting_1"].format(app.mention, message.chat.id, message.chat.title),
+        anu_settings,
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
@@ -58,12 +105,23 @@ async def settings_cb(client, CallbackQuery, _):
     except:
         pass
     buttons = setting_markup(_)
+    
+    anu_settings = (
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} **ᴀɴᴜ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴀɪɴꜰʀᴀᴍᴇ**\n"
+        f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+        f"┠ ɢʀᴏᴜᴩ: {CallbackQuery.message.chat.title}\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} ᴄᴏɴꜰɪɢᴜʀᴇ ᴀɴᴜ ᴍᴀᴛʀɪx:\n"
+        f"┠ ⇛ ᴜꜱᴇ ᴛʜᴇ ʙᴜᴛᴛᴏɴꜱ ʙᴇʟᴏᴡ ᴛᴏ\n"
+        f"┠ ⇛ ᴄᴜꜱᴛᴏᴍɪᴢᴇ ᴩʟᴀʏᴍᴏᴅᴇ, ᴀᴜᴛʜ\n"
+        f"┠ ⇛ ᴜꜱᴇʀꜱ ᴀɴᴅ ᴠᴏᴛᴇ-ꜱᴋɪᴩ ᴍᴏᴅᴇꜱ.\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┠ 🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ**"
+    )
     return await CallbackQuery.edit_message_text(
-        _["setting_1"].format(
-            app.mention,
-            CallbackQuery.message.chat.id,
-            CallbackQuery.message.chat.title,
-        ),
+        anu_settings,
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
@@ -76,12 +134,34 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
     except:
         pass
     if CallbackQuery.message.chat.type == ChatType.PRIVATE:
-        await app.resolve_peer(OWNER_ID)
-        OWNER = OWNER_ID
-        buttons = private_panel(_)
+        # THE CRASH FIX: Going back to the Start Photo Panel
+        bot_username = app.username
         UP, CPU, RAM, DISK = await bot_sys_stats()
-        return await CallbackQuery.edit_message_text(
-            _["start_2"].format(CallbackQuery.from_user.mention, app.mention, UP, DISK, CPU, RAM),
+        buttons = anu_private_panel(bot_username)
+        
+        caption = (
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} ʜ ᴇ ʏ ,  {CallbackQuery.from_user.mention}\n"
+            f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+            f"┠ {get_vip()} ɪ ᴀᴍ ᴀɴᴜ ᴍᴀᴛʀɪx 🎵\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} ɪ ᴀᴍ ᴛʜᴇ ꜰᴀꜱᴛᴇꜱᴛ ᴀɴᴅ ᴩᴏᴡᴇʀꜰᴜʟ\n"
+            f"┠ ᴍᴜꜱɪᴄ ᴩʟᴀʏᴇʀ ʙᴏᴛ ᴡɪᴛʜ\n"
+            f"┠ ꜱᴏᴍᴇ ᴀᴡᴇꜱᴏᴍᴇ ꜰᴇᴀᴛᴜʀᴇꜱ {get_vip()}\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} ᴜᴩᴛɪᴍᴇ: `{UP}`\n"
+            f"┠ {get_vip()} ꜱᴇʀᴠᴇʀ ꜱᴛᴏʀᴀɢᴇ: `{DISK}`\n"
+            f"┠ {get_vip()} ᴄᴩᴜ ʟᴏᴀᴅ: `{CPU}`\n"
+            f"┠ {get_vip()} ʀᴀᴍ ᴄᴏɴꜱᴜᴍᴩᴛɪᴏɴ: `{RAM}`\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ 🖤 ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ {get_vip()}\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
+        )
+        return await CallbackQuery.edit_message_caption(
+            caption=caption,
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     else:
@@ -316,8 +396,16 @@ async def authusers_mar(client, CallbackQuery, _):
             except:
                 pass
             j = 0
-            await CallbackQuery.edit_message_text(_["auth_6"])
-            msg = _["auth_7"].format(CallbackQuery.message.chat.title)
+            
+            # ANU DARK THEME AUTH LIST
+            msg = (
+                f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"┠ {get_vip()} **ᴀɴᴜ ᴀᴜᴛʜ ʟɪꜱᴛ**\n"
+                f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+                f"┠ ɢʀᴏᴜᴩ: {CallbackQuery.message.chat.title}\n"
+                f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            )
+            
             for note in _authusers:
                 _note = await get_authuser(CallbackQuery.message.chat.id, note)
                 user_id = _note["auth_user_id"]
@@ -329,16 +417,19 @@ async def authusers_mar(client, CallbackQuery, _):
                     j += 1
                 except:
                     continue
-                msg += f"{j}➤ {user}[<code>{user_id}</code>]\n"
-                msg += f"   {_['auth_8']} {admin_name}[<code>{admin_id}</code>]\n\n"
+                msg += f"┠ ⇛ **{j}** ➤ {user} [`{user_id}`]\n"
+                msg += f"┠ ⇛ ᴀᴅᴅᴇᴅ ʙʏ: {admin_name}\n"
+            
+            msg += f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n┠ 🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ**"
+            
             upl = InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
-                            text=_["BACK_BUTTON"], callback_data=f"AU"
+                            text="🔙 ˹ ʙ ᴀ ᴄ ᴋ ˼", callback_data=f"AU"
                         ),
                         InlineKeyboardButton(
-                            text=_["CLOSE_BUTTON"],
+                            text="❌ ˹ ᴄ ʟ ᴏ ꜱ ᴇ ˼",
                             callback_data=f"close",
                         ),
                     ]
