@@ -26,7 +26,7 @@ from RessoMusic.utils.database import (
     skip_off,
     skip_on,
 )
-from RessoMusic.utils import bot_sys_stats
+# bot_sys_stats removed from below to fix lag
 from RessoMusic.utils.decorators.admins import ActualAdminCB
 from RessoMusic.utils.decorators.language import language, languageCB
 from RessoMusic.utils.inline.settings import (
@@ -50,7 +50,7 @@ EIDS = [
 def get_vip():
     return f'<emoji id="{random.choice(EIDS)}">🦋</emoji>'
 
-# YORSA STYLE PRIVATE PANEL BUTTONS (For Back Button Fix)
+# YORSA STYLE PRIVATE PANEL BUTTONS (NO EID ERROR IN BUTTONS)
 def anu_private_panel(bot_username):
     return [
         [
@@ -105,7 +105,7 @@ async def settings_cb(client, CallbackQuery, _):
     except:
         pass
     buttons = setting_markup(_)
-    
+
     anu_settings = (
         f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"┠ {get_vip()} **ᴀɴᴜ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴀɪɴꜰʀᴀᴍᴇ**\n"
@@ -134,11 +134,10 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
     except:
         pass
     if CallbackQuery.message.chat.type == ChatType.PRIVATE:
-        # THE CRASH FIX: Going back to the Start Photo Panel
+        # THE CRASH FIX: bot_sys_stats removed to make buttons FAST & SMOOTH!
         bot_username = app.username
-        UP, CPU, RAM, DISK = await bot_sys_stats()
         buttons = anu_private_panel(bot_username)
-        
+
         caption = (
             f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
             f"┠ {get_vip()} ʜ ᴇ ʏ ,  {CallbackQuery.from_user.mention}\n"
@@ -150,15 +149,7 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
             f"┠ ᴍᴜꜱɪᴄ ᴩʟᴀʏᴇʀ ʙᴏᴛ ᴡɪᴛʜ\n"
             f"┠ ꜱᴏᴍᴇ ᴀᴡᴇꜱᴏᴍᴇ ꜰᴇᴀᴛᴜʀᴇꜱ {get_vip()}\n"
             f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"┠ {get_vip()} ᴜᴩᴛɪᴍᴇ: `{UP}`\n"
-            f"┠ {get_vip()} ꜱᴇʀᴠᴇʀ ꜱᴛᴏʀᴀɢᴇ: `{DISK}`\n"
-            f"┠ {get_vip()} ᴄᴩᴜ ʟᴏᴀᴅ: `{CPU}`\n"
-            f"┠ {get_vip()} ʀᴀᴍ ᴄᴏɴꜱᴜᴍᴩᴛɪᴏɴ: `{RAM}`\n"
-            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
             f"┠ 🖤 ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ {get_vip()}\n"
-            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
         return await CallbackQuery.edit_message_caption(
             caption=caption,
@@ -396,7 +387,7 @@ async def authusers_mar(client, CallbackQuery, _):
             except:
                 pass
             j = 0
-            
+
             # ANU DARK THEME AUTH LIST
             msg = (
                 f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -405,7 +396,7 @@ async def authusers_mar(client, CallbackQuery, _):
                 f"┠ ɢʀᴏᴜᴩ: {CallbackQuery.message.chat.title}\n"
                 f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
             )
-            
+
             for note in _authusers:
                 _note = await get_authuser(CallbackQuery.message.chat.id, note)
                 user_id = _note["auth_user_id"]
@@ -419,9 +410,9 @@ async def authusers_mar(client, CallbackQuery, _):
                     continue
                 msg += f"┠ ⇛ **{j}** ➤ {user} [`{user_id}`]\n"
                 msg += f"┠ ⇛ ᴀᴅᴅᴇᴅ ʙʏ: {admin_name}\n"
-            
+
             msg += f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n┠ 🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ**"
-            
+
             upl = InlineKeyboardMarkup(
                 [
                     [
