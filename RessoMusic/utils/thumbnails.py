@@ -6,6 +6,11 @@ from aiofiles.os import path as aiopath
 from ..logging import LOGGER
 from youtubesearchpython.__future__ import VideosSearch
 
+# ☠️ IMPORTING YOUR CUSTOM THUMBNAIL FROM PLAY.PY ☠️
+try:
+    from RessoMusic.utils.inline.play import CUSTOM_THUMB
+except Exception:
+    CUSTOM_THUMB = None
 
 # ========================
 # Font Loader
@@ -15,20 +20,20 @@ def load_fonts():
         return {
             "cfont": ImageFont.truetype("RessoMusic/assets/cfont.ttf", 24),
             "tfont": ImageFont.truetype("RessoMusic/assets/font.ttf", 30),
+            "bfont": ImageFont.truetype("RessoMusic/assets/cfont.ttf", 26), # Branding Font
         }
     except Exception as e:
         LOGGER.error("Font loading error: %s, using default fonts", e)
         return {
             "cfont": ImageFont.load_default(),
             "tfont": ImageFont.load_default(),
+            "bfont": ImageFont.load_default(),
         }
-
 
 FONTS = load_fonts()
 
 FALLBACK_IMAGE_PATH = "RessoMusic/assets/controller.png"
 YOUTUBE_IMG_URL = "https://i.ytimg.com/vi/default.jpg"
-
 
 # ========================
 # Utilities
@@ -53,9 +58,7 @@ async def resize_youtube_thumbnail(img: Image.Image) -> Image.Image:
 
     cropped = img.crop((left, top, right, bottom))
     enhanced = ImageEnhance.Sharpness(cropped).enhance(1.5)
-    img.close()
     return enhanced
-
 
 async def fetch_image(url: str) -> Image.Image:
     async with httpx.AsyncClient() as client:
@@ -65,12 +68,11 @@ async def fetch_image(url: str) -> Image.Image:
             response = await client.get(url, timeout=5)
             response.raise_for_status()
             img = Image.open(BytesIO(response.content)).convert("RGBA")
-            if url.startswith("https://i.ytimg.com"):
+            if url.startswith("https://i.ytimg.com") or url.startswith("https://telegra.ph"):
                 img = await resize_youtube_thumbnail(img)
             return img
         except Exception as e:
             LOGGER.error("Image loading error for URL %s: %s", url, e)
-            # Try fallback YouTube default
             try:
                 response = await client.get(YOUTUBE_IMG_URL, timeout=5)
                 response.raise_for_status()
@@ -78,24 +80,19 @@ async def fetch_image(url: str) -> Image.Image:
                 img = await resize_youtube_thumbnail(img)
                 return img
             except Exception as e:
-                LOGGER.error("YouTube fallback image error: %s", e)
-                # Try local fallback
                 try:
                     with open(FALLBACK_IMAGE_PATH, "rb") as f:
                         img = Image.open(BytesIO(f.read())).convert("RGBA")
                     img = await resize_youtube_thumbnail(img)
                     return img
                 except Exception as e:
-                    LOGGER.error("Local fallback image error: %s", e)
                     return Image.new("RGBA", (1280, 720), (255, 255, 255, 255))
-
 
 def clean_text(text: str, limit: int = 25) -> str:
     if not text:
         return "Unknown"
     text = text.strip()
     return f"{text[:limit - 3]}..." if len(text) > limit else text
-
 
 async def add_controls(img: Image.Image) -> Image.Image:
     img = img.filter(ImageFilter.GaussianBlur(radius=10))
@@ -107,7 +104,6 @@ async def add_controls(img: Image.Image) -> Image.Image:
         controls = ImageEnhance.Sharpness(controls).enhance(5.0)
         controls_x, controls_y = 335, 415
     except Exception as e:
-        LOGGER.error("Controls image loading error: %s", e)
         controls = Image.new("RGBA", (600, 160), (0, 0, 0, 0))
         controls_x, controls_y = 335, 415
 
@@ -123,7 +119,6 @@ async def add_controls(img: Image.Image) -> Image.Image:
     region.close()
     controls.close()
     return img
-
 
 def make_rounded_rectangle(image: Image.Image, size: tuple = (184, 184)) -> Image.Image:
     width, height = image.size
@@ -146,13 +141,11 @@ def make_rounded_rectangle(image: Image.Image, size: tuple = (184, 184)) -> Imag
     resize.close()
     return rounded
 
-
 # ========================
 # Main Function
 # ========================
 async def get_thumb(videoid: str) -> str:
     if not videoid or not re.match(r"^[a-zA-Z0-9_-]{11}$", videoid):
-        LOGGER.error("Invalid YouTube video ID: %s", videoid)
         return ""
 
     save_dir = f"database/photos/{videoid}.png"
@@ -162,7 +155,6 @@ async def get_thumb(videoid: str) -> str:
         if not await aiopath.exists(save_dir_parent):
             await asyncio.to_thread(os.makedirs, save_dir_parent)
     except Exception as e:
-        LOGGER.error("Failed to create directory %s: %s", save_dir_parent, e)
         return ""
 
     try:
@@ -171,11 +163,15 @@ async def get_thumb(videoid: str) -> str:
         result = (await results.next())["result"][0]
         title = clean_text(result.get("title", "Unknown Title"), limit=25)
         artist = clean_text(result.get("channel", {}).get("name", "Unknown Artist"), limit=28)
+        
+        # 👑 OVERRIDE WITH CUSTOM THUMB IF AVAILABLE
         thumbnail_url = result.get("thumbnails", [{}])[0].get("url", "").split("?")[0]
+        if CUSTOM_THUMB:
+            thumbnail_url = CUSTOM_THUMB
+
     except Exception as e:
-        LOGGER.error("YouTube metadata fetch error for video %s: %s", videoid, e)
         title, artist = "Unknown Title", "Unknown Artist"
-        thumbnail_url = YOUTUBE_IMG_URL
+        thumbnail_url = CUSTOM_THUMB if CUSTOM_THUMB else YOUTUBE_IMG_URL
 
     thumb = await fetch_image(thumbnail_url)
     bg = await add_controls(thumb)
@@ -188,7 +184,10 @@ async def get_thumb(videoid: str) -> str:
     # Draw text
     draw = ImageDraw.Draw(bg)
     draw.text((540, 155), title, (255, 255, 255), font=FONTS["tfont"])
-    draw.text((540, 200), artist, (255, 255, 255), font=FONTS["cfont"])
+    draw.text((540, 200), artist, (200, 200, 200), font=FONTS["cfont"])
+    
+    # 🔥 ANU SYSTEM BRANDING (Pink Neon Style) 🔥
+    draw.text((540, 245), "[ ᴘ ᴏ ᴡ ᴇ ʀ ᴇ ᴅ  ʙ ʏ  ᴀ ɴ ᴜ  s ʏ s ᴛ ᴇ ᴍ ]", (255, 105, 180), font=FONTS["bfont"])
 
     # Enhance
     bg = ImageEnhance.Contrast(bg).enhance(1.1)
@@ -201,18 +200,15 @@ async def get_thumb(videoid: str) -> str:
             image.close()
             bg.close()
             return save_dir
-        LOGGER.error("Failed to save thumbnail at %s", save_dir)
     except Exception as e:
-        LOGGER.error("Thumbnail save error for %s: %s", save_dir, e)
+        pass
 
     thumb.close()
     image.close()
     bg.close()
     return ""
 
-
 # ========================
 # Backward Compatibility
 # ========================
-# Old code expects gen_thumb, so map it here
 gen_thumb = get_thumb
