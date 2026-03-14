@@ -65,27 +65,31 @@ async def get_start_image():
     return DEFAULT_START_PIC
 
 # ================================
-#      DARK INLINE BUTTONS (UI)
+#      YORSA STYLE INLINE BUTTONS
 # ================================
-def anu_private_panel():
+def anu_private_panel(bot_username):
     return [
         [
-            InlineKeyboardButton(text="🕷️ ꜱᴜᴩᴩᴏʀᴛ ɢʀᴏᴜᴩ", url="https://t.me/BMW_USERBOT_II"),
-            InlineKeyboardButton(text="🦇 ᴍʏ ʜᴏᴍᴇ", url="https://t.me/FUCK_BY_REFLEX")
+            # TAP TO SEE MAGIC (ADD TO GROUP BUTTON)
+            InlineKeyboardButton(text="↪ ˹ ᴛ ᴀ ᴩ  ᴛ ᴏ  ꜱ ᴇ ᴇ  ᴍ ᴀ ɢ ɪ ᴄ ˼ ↩", url=f"https://t.me/{bot_username}?startgroup=true")
         ],
         [
-            InlineKeyboardButton(text="💀 ᴍʏ ᴍᴀꜱᴛᴇʀ", url="https://t.me/MONSTER_FUCK_BITCHES")
+            InlineKeyboardButton(text="💬 ˹ ꜱ ᴜ ᴩ ᴩ ᴏ ʀ ᴛ ˼", url="https://t.me/BMW_USERBOT_II"),
+            InlineKeyboardButton(text="🐱 ˹ ᴍ ʏ  ʜ ᴏ ᴍ ᴇ ˼", url="https://t.me/FUCK_BY_REFLEX")
         ],
         [
-            InlineKeyboardButton(text="🍷 ᴄᴏᴍᴍᴀɴᴅꜱ & ʜᴇʟᴩ", callback_data="anu_help_menu")
+            InlineKeyboardButton(text="🤷‍♂️ ˹ ʜ ᴇ ʟ ᴩ  ᴀ ɴ ᴅ  ᴄ ᴏ ᴍ ᴍ ᴀ ɴ ᴅ ꜱ ˼", callback_data="anu_help_menu")
+        ],
+        [
+            InlineKeyboardButton(text="🕶 ˹ ᴍ ʏ  ᴍ ᴀ ꜱ ᴛ ᴇ ʀ 👑 ˼", url="https://t.me/MONSTER_FUCK_BITCHES")
         ]
     ]
 
 def anu_group_panel():
     return [
         [
-            InlineKeyboardButton(text="🕷️ ꜱᴜᴩᴩᴏʀᴛ", url="https://t.me/BMW_USERBOT_II"),
-            InlineKeyboardButton(text="🦇 ᴍʏ ʜᴏᴍᴇ", url="https://t.me/FUCK_BY_REFLEX")
+            InlineKeyboardButton(text="💬 ˹ ꜱ ᴜ ᴩ ᴩ ᴏ ʀ ᴛ ˼", url="https://t.me/BMW_USERBOT_II"),
+            InlineKeyboardButton(text="🐱 ˹ ᴍ ʏ  ʜ ᴏ ᴍ ᴇ ˼", url="https://t.me/FUCK_BY_REFLEX")
         ]
     ]
 
@@ -107,32 +111,37 @@ async def set_start_img(client, message: Message):
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
-    # --- DARK BOOTING ANIMATION ---
-    anim = await message.reply_text(f"▰▱▱▱▱ {get_vip()} `[ ɪɴɪᴛɪᴀʟɪᴢɪɴɢ ᴀɴᴜ ᴄᴏʀᴇ... ]`")
-    await add_served_user(message.from_user.id)
-    await asyncio.sleep(0.3)
-    await anim.edit_text(f"▰▰▰▱▱ {get_vip()} `[ ʙʏᴩᴀꜱꜱɪɴɢ ꜱᴇᴄᴜʀɪᴛʏ ᴩʀᴏᴛᴏᴄᴏʟꜱ... ]`")
-    await asyncio.sleep(0.3)
-    await anim.edit_text(f"▰▰▰▰▰ {get_vip()} `[ ᴀɴᴜ ᴍᴀɪɴꜰʀᴀᴍᴇ ᴏɴʟɪɴᴇ. ]`")
-    await anim.delete()
-
     UP, CPU, RAM, DISK = await bot_sys_stats()
     start_pic = await get_start_image()
+    bot_username = app.username
     
+    # 🌟 MULTI PREMIUM EMOJI BOX UI (YORSA STYLE)
     caption = (
-        f"{get_vip()} **ᴀɴᴜ ᴍᴀᴛʀɪx ꜱʏꜱᴛᴇᴍ**\n\n"
-        f"❝ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ ᴅᴀʀᴋ ꜱɪᴅᴇ, {message.from_user.mention} ❞\n\n"
-        f"ɪ ᴀᴍ {app.mention}, ᴀ ʟᴇᴛʜᴀʟ ᴀɴᴅ ᴀᴅᴠᴀɴᴄᴇᴅ ᴍᴜꜱɪᴄ ᴇɴɢɪɴᴇ ᴅᴇꜱɪɢɴᴇᴅ ᴛᴏ ᴅᴏᴍɪɴᴀᴛᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛꜱ.\n\n"
-        f"🖧 **ꜱᴇʀᴠᴇʀ ꜱᴛᴀᴛꜱ:**\n"
-        f"⇛ ᴜᴩᴛɪᴍᴇ: `{UP}`\n"
-        f"⇛ ʀᴀᴍ: `{RAM}` | ᴅɪꜱᴋ: `{DISK}`\n\n"
-        f"🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꭙ ꜱʏꜱᴛᴇᴍ**"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} ʜ ᴇ ʏ ,  {message.from_user.mention}\n"
+        f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+        f"┠ {get_vip()} ɪ ᴀᴍ ᴀɴᴜ ᴍᴀᴛʀɪx 🎵\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} ɪ ᴀᴍ ᴛʜᴇ ꜰᴀꜱᴛᴇꜱᴛ ᴀɴᴅ ᴩᴏᴡᴇʀꜰᴜʟ\n"
+        f"┠ ᴍᴜꜱɪᴄ ᴩʟᴀʏᴇʀ ʙᴏᴛ ᴡɪᴛʜ\n"
+        f"┠ ꜱᴏᴍᴇ ᴀᴡᴇꜱᴏᴍᴇ ꜰᴇᴀᴛᴜʀᴇꜱ {get_vip()}\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} ᴜᴩᴛɪᴍᴇ: `{UP}`\n"
+        f"┠ {get_vip()} ꜱᴇʀᴠᴇʀ ꜱᴛᴏʀᴀɢᴇ: `{DISK}`\n"
+        f"┠ {get_vip()} ᴄᴩᴜ ʟᴏᴀᴅ: `{CPU}`\n"
+        f"┠ {get_vip()} ʀᴀᴍ ᴄᴏɴꜱᴜᴍᴩᴛɪᴏɴ: `{RAM}`\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ 🖤 ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ {get_vip()}\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
     )
 
     await message.reply_photo(
         photo=start_pic,
         caption=caption,
-        reply_markup=InlineKeyboardMarkup(anu_private_panel()),
+        reply_markup=InlineKeyboardMarkup(anu_private_panel(bot_username)),
     )
 
     if await is_on_off(2):
@@ -151,10 +160,12 @@ async def start_gp(client, message: Message, _):
     start_pic = await get_start_image()
     
     caption = (
-        f"{get_vip()} **ᴀɴᴜ ᴍᴀᴛʀɪx ɪꜱ ᴀʟɪᴠᴇ.**\n\n"
-        f"ꜱʏꜱᴛᴇᴍꜱ ᴀʀᴇ ʀᴜɴɴɪɴɢ ꜱᴍᴏᴏᴛʜʟʏ.\n"
-        f"⇛ ᴜᴩᴛɪᴍᴇ: `{get_readable_time(uptime)}`\n\n"
-        f"🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꭙ ꜱʏꜱᴛᴇᴍ**"
+        f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"┠ {get_vip()} **ᴀɴᴜ ᴍᴀᴛʀɪx ɪꜱ ᴀʟɪᴠᴇ.**\n"
+        f"┠ ꜱʏꜱᴛᴇᴍꜱ ᴀʀᴇ ʀᴜɴɴɪɴɢ ꜱᴍᴏᴏᴛʜʟʏ.\n"
+        f"┠ ⇛ ᴜᴩᴛɪᴍᴇ: `{get_readable_time(uptime)}`\n"
+        f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"┠ 🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ**"
     )
 
     await message.reply_photo(
@@ -171,23 +182,26 @@ async def start_gp(client, message: Message, _):
 @app.on_callback_query(filters.regex("^anu_help_") & ~BANNED_USERS)
 async def help_menu_callbacks(client, query: CallbackQuery):
     data = query.data
+    bot_username = app.username
     
     # 🔙 BACK BUTTON / MAIN MENU
     if data == "anu_help_menu":
         caption = (
-            f"{get_vip()} **ᴀɴᴜ ᴄᴏᴍᴍᴀɴᴅ ᴍᴀɪɴꜰʀᴀᴍᴇ**\n\n"
-            f"ꜱᴇʟᴇᴄᴛ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ᴛᴏ ᴀᴄᴄᴇꜱꜱ ᴛʜᴇ ᴄᴏɴᴛʀᴏʟ ᴩᴀɴᴇʟ."
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} **ᴀɴᴜ ᴄᴏᴍᴍᴀɴᴅ ᴍᴀɪɴꜰʀᴀᴍᴇ**\n"
+            f"┠ ꜱᴇʟᴇᴄᴛ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ᴛᴏ ᴀᴄᴄᴇꜱꜱ ᴛʜᴇ ᴄᴏɴᴛʀᴏʟ ᴩᴀɴᴇʟ.\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
         keyboard = InlineKeyboardMarkup([
             [
-                InlineKeyboardButton("🗡️ ᴀᴅᴍɪɴ", callback_data="anu_help_admin"),
-                InlineKeyboardButton("👑 ᴏᴡɴᴇʀ", callback_data="anu_help_owner")
+                InlineKeyboardButton("🗡️ ˹ ᴀᴅᴍɪɴ ˼", callback_data="anu_help_admin"),
+                InlineKeyboardButton("👑 ˹ ᴏᴡɴᴇʀ ˼", callback_data="anu_help_owner")
             ],
             [
-                InlineKeyboardButton("🎵 ᴩʟᴀʏ", callback_data="anu_help_play")
+                InlineKeyboardButton("🎵 ˹ ᴩʟᴀʏ ˼", callback_data="anu_help_play")
             ],
             [
-                InlineKeyboardButton("🔙 ʀᴇᴛᴜʀɴ", callback_data="anu_help_close")
+                InlineKeyboardButton("🔙 ˹ ʀᴇᴛᴜʀɴ ˼", callback_data="anu_help_close")
             ]
         ])
         await query.message.edit_caption(caption=caption, reply_markup=keyboard)
@@ -195,56 +209,72 @@ async def help_menu_callbacks(client, query: CallbackQuery):
     # 🗡️ ADMIN COMMANDS
     elif data == "anu_help_admin":
         caption = (
-            f"{get_vip()} **ᴀɴᴜ ᴀᴅᴍɪɴ ᴄᴏɴᴛʀᴏʟꜱ**\n\n"
-            f"⇛ `/pause` - ᴩᴀᴜꜱᴇ ᴛʜᴇ ꜱᴛʀᴇᴀᴍ.\n"
-            f"⇛ `/resume` - ʀᴇꜱᴜᴍᴇ ᴛʜᴇ ꜱᴛʀᴇᴀᴍ.\n"
-            f"⇛ `/skip` - ꜱᴋɪᴩ ᴛᴏ ɴᴇxᴛ ᴛʀᴀᴄᴋ.\n"
-            f"⇛ `/stop` - ꜱᴛᴏᴩ ᴍᴜꜱɪᴄ & ʟᴇᴀᴠᴇ ᴠᴄ.\n"
-            f"⇛ `/mute` - ᴍᴜᴛᴇ ᴀ ᴜꜱᴇʀ.\n"
-            f"⇛ `/unmute` - ᴜɴᴍᴜᴛᴇ ᴀ ᴜꜱᴇʀ.\n"
-            f"⇛ `/ban` - ʙᴀɴ ᴀ ᴜꜱᴇʀ ꜰʀᴏᴍ ɢʀᴏᴜᴩ.\n"
-            f"⇛ `/unban` - ᴜɴʙᴀɴ ᴀ ᴜꜱᴇʀ."
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} **ᴀɴᴜ ᴀᴅᴍɪɴ ᴄᴏɴᴛʀᴏʟꜱ**\n\n"
+            f"┠ ⇛ `/pause` - ᴩᴀᴜꜱᴇ ᴛʜᴇ ꜱᴛʀᴇᴀᴍ.\n"
+            f"┠ ⇛ `/resume` - ʀᴇꜱᴜᴍᴇ ᴛʜᴇ ꜱᴛʀᴇᴀᴍ.\n"
+            f"┠ ⇛ `/skip` - ꜱᴋɪᴩ ᴛᴏ ɴᴇxᴛ ᴛʀᴀᴄᴋ.\n"
+            f"┠ ⇛ `/stop` - ꜱᴛᴏᴩ ᴍᴜꜱɪᴄ & ʟᴇᴀᴠᴇ ᴠᴄ.\n"
+            f"┠ ⇛ `/mute` - ᴍᴜᴛᴇ ᴀ ᴜꜱᴇʀ.\n"
+            f"┠ ⇛ `/unmute` - ᴜɴᴍᴜᴛᴇ ᴀ ᴜꜱᴇʀ.\n"
+            f"┠ ⇛ `/ban` - ʙᴀɴ ᴀ ᴜꜱᴇʀ ꜰʀᴏᴍ ɢʀᴏᴜᴩ.\n"
+            f"┠ ⇛ `/unban` - ᴜɴʙᴀɴ ᴀ ᴜꜱᴇʀ.\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ʀᴇᴛᴜʀɴ", callback_data="anu_help_menu")]])
+        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ˹ ʀᴇᴛᴜʀɴ ˼", callback_data="anu_help_menu")]])
         await query.message.edit_caption(caption=caption, reply_markup=keyboard)
 
     # 👑 OWNER COMMANDS
     elif data == "anu_help_owner":
         caption = (
-            f"{get_vip()} **ᴀɴᴜ ᴏᴡɴᴇʀ ᴏᴠᴇʀʀɪᴅᴇ**\n\n"
-            f"⇛ `/gban` - ɢʟᴏʙᴀʟ ʙᴀɴ ᴀ ᴜꜱᴇʀ.\n"
-            f"⇛ `/ungban` - ɢʟᴏʙᴀʟ ᴜɴʙᴀɴ ᴀ ᴜꜱᴇʀ.\n"
-            f"⇛ `/broadcast` - ꜱᴇɴᴅ ᴍꜱɢ ᴛᴏ ᴀʟʟ ᴄʜᴀᴛꜱ.\n"
-            f"⇛ `/setstart` - ᴄʜᴀɴɢᴇ ꜱᴛᴀʀᴛ ɪᴍᴀɢᴇ.\n"
-            f"⇛ `/setwelcome_dm` - ꜱᴇᴛ ᴅᴍ ᴡᴇʟᴄᴏᴍᴇ ᴍꜱɢ.\n"
-            f"⇛ `/setwelcome_grp` - ꜱᴇᴛ ɢʀᴏᴜᴩ ᴡᴇʟᴄᴏᴍᴇ ᴍꜱɢ."
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} **ᴀɴᴜ ᴏᴡɴᴇʀ ᴏᴠᴇʀʀɪᴅᴇ**\n\n"
+            f"┠ ⇛ `/gban` - ɢʟᴏʙᴀʟ ʙᴀɴ ᴀ ᴜꜱᴇʀ.\n"
+            f"┠ ⇛ `/ungban` - ɢʟᴏʙᴀʟ ᴜɴʙᴀɴ ᴀ ᴜꜱᴇʀ.\n"
+            f"┠ ⇛ `/broadcast` - ꜱᴇɴᴅ ᴍꜱɢ ᴛᴏ ᴀʟʟ ᴄʜᴀᴛꜱ.\n"
+            f"┠ ⇛ `/setstart` - ᴄʜᴀɴɢᴇ ꜱᴛᴀʀᴛ ɪᴍᴀɢᴇ.\n"
+            f"┠ ⇛ `/setwelcome_dm` - ꜱᴇᴛ ᴅᴍ ᴡᴇʟᴄᴏᴍᴇ ᴍꜱɢ.\n"
+            f"┠ ⇛ `/setwelcome_grp` - ꜱᴇᴛ ɢʀᴏᴜᴩ ᴡᴇʟᴄᴏᴍᴇ ᴍꜱɢ.\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ʀᴇᴛᴜʀɴ", callback_data="anu_help_menu")]])
+        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ˹ ʀᴇᴛᴜʀɴ ˼", callback_data="anu_help_menu")]])
         await query.message.edit_caption(caption=caption, reply_markup=keyboard)
 
     # 🎵 PLAY COMMANDS
     elif data == "anu_help_play":
         caption = (
-            f"{get_vip()} **ᴀɴᴜ ᴍᴜꜱɪᴄ ᴇɴɢɪɴᴇ**\n\n"
-            f"⇛ `/play` - ᴩʟᴀʏ ᴀ ꜱᴏɴɢ ɪɴ ᴠᴄ.\n"
-            f"⇛ `/vplay` - ᴩʟᴀʏ ᴠɪᴅᴇᴏ ɪɴ ᴠᴄ.\n"
-            f"⇛ `/song` - ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ꜱᴏɴɢ.\n"
-            f"⇛ `/video` - ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ᴠɪᴅᴇᴏ.\n"
-            f"⇛ `/queue` - ᴄʜᴇᴄᴋ ᴩʟᴀʏ ʟɪꜱᴛ."
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} **ᴀɴᴜ ᴍᴜꜱɪᴄ ᴇɴɢɪɴᴇ**\n\n"
+            f"┠ ⇛ `/play` - ᴩʟᴀʏ ᴀ ꜱᴏɴɢ ɪɴ ᴠᴄ.\n"
+            f"┠ ⇛ `/vplay` - ᴩʟᴀʏ ᴠɪᴅᴇᴏ ɪɴ ᴠᴄ.\n"
+            f"┠ ⇛ `/song` - ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ꜱᴏɴɢ.\n"
+            f"┠ ⇛ `/video` - ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ᴠɪᴅᴇᴏ.\n"
+            f"┠ ⇛ `/queue` - ᴄʜᴇᴄᴋ ᴩʟᴀʏ ʟɪꜱᴛ.\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ʀᴇᴛᴜʀɴ", callback_data="anu_help_menu")]])
+        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 ˹ ʀᴇᴛᴜʀɴ ˼", callback_data="anu_help_menu")]])
         await query.message.edit_caption(caption=caption, reply_markup=keyboard)
 
     # 🔙 CLOSE HELP
     elif data == "anu_help_close":
         UP, CPU, RAM, DISK = await bot_sys_stats()
+        
         caption = (
-            f"{get_vip()} **ᴀɴᴜ ᴍᴀᴛʀɪx ꜱʏꜱᴛᴇᴍ**\n\n"
-            f"❝ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ ᴅᴀʀᴋ ꜱɪᴅᴇ, {query.from_user.mention} ❞\n\n"
-            f"ɪ ᴀᴍ {app.mention}, ᴀ ʟᴇᴛʜᴀʟ ᴀɴᴅ ᴀᴅᴠᴀɴᴄᴇᴅ ᴍᴜꜱɪᴄ ᴇɴɢɪɴᴇ ᴅᴇꜱɪɢɴᴇᴅ ᴛᴏ ᴅᴏᴍɪɴᴀᴛᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛꜱ.\n\n"
-            f"🖤 **ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꭙ ꜱʏꜱᴛᴇᴍ**"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} ʜ ᴇ ʏ ,  {query.from_user.mention}\n"
+            f"┠ {get_vip()} {get_vip()} {get_vip()}\n"
+            f"┠ {get_vip()} ɪ ᴀᴍ ᴀɴᴜ ᴍᴀᴛʀɪx 🎵\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ {get_vip()} ɪ ᴀᴍ ᴛʜᴇ ꜰᴀꜱᴛᴇꜱᴛ ᴀɴᴅ ᴩᴏᴡᴇʀꜰᴜʟ\n"
+            f"┠ ᴍᴜꜱɪᴄ ᴩʟᴀʏᴇʀ ʙᴏᴛ ᴡɪᴛʜ\n"
+            f"┠ ꜱᴏᴍᴇ ᴀᴡᴇꜱᴏᴍᴇ ꜰᴇᴀᴛᴜʀᴇꜱ {get_vip()}\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"┏━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"┠ 🖤 ᴩᴏᴡᴇʀᴇᴅ ʙʏ » ᴀɴᴜ ꜱʏꜱᴛᴇᴍ {get_vip()}\n"
+            f"┗━━━━━━━━━━━━━━━━━━━━━━━━"
         )
         await query.message.edit_caption(
             caption=caption, 
-            reply_markup=InlineKeyboardMarkup(anu_private_panel())
+            reply_markup=InlineKeyboardMarkup(anu_private_panel(bot_username))
         )
