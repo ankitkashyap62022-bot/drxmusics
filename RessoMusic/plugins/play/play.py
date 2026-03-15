@@ -14,8 +14,13 @@ import config
 from RessoMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
 from RessoMusic.core.call import AMBOTOP
 from RessoMusic.misc import db
+
 # 🔥 MONGODB DATABASE 🔥
 from RessoMusic.core.mongo import mongodb
+
+# 🔥 THUMBNAIL CACHE SYNC 🔥
+from RessoMusic.utils.thumbnails import _CACHE
+
 from RessoMusic.utils import seconds_to_min, time_to_seconds
 from RessoMusic.utils.channelplay import get_channeplayCB
 from RessoMusic.utils.decorators.language import languageCB
@@ -53,12 +58,12 @@ def get_rand_emo():
 # ==========================================
 def get_custom_buttons():
     return [
-        [InlineKeyboardButton(f"🕸️ ᴍ ʏ . ᴄ ʟ ᴜ ʙ 🕸️", url="https://t.me/FUCK_BY_REFLEX")],
+        [InlineKeyboardButton(f"ᴍ ʏ . ᴄ ʟ ᴜ ʙ", url="https://t.me/FUCK_BY_REFLEX")],
         [
-            InlineKeyboardButton(f"👾 ᴍ ʏ . ʟ ᴏ ʀ ᴅ 👾", url="https://t.me/MONSTER_FUCK_BITCHES"),
-            InlineKeyboardButton(f"☠️ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ☠️", url="https://t.me/MONSTER_FUCK_BITCHES")
+            InlineKeyboardButton(f"ᴍ ʏ . ʟ ᴏ ʀ ᴅ", url="https://t.me/MONSTER_FUCK_BITCHES"),
+            InlineKeyboardButton(f"ᴘᴏᴡᴇʀᴇᴅ ʙʏ", url="https://t.me/MONSTER_FUCK_BITCHES")
         ],
-        [InlineKeyboardButton(f"[ ⏏️ T E R M I N A T E ]", callback_data="close")]
+        [InlineKeyboardButton(f"🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close")]
     ]
 
 # ==========================================
@@ -73,9 +78,22 @@ async def get_cthumb():
     except:
         return None
 
-# 🔥 MULTI-CLOUD UPLOADER (ANTI-BLOCK SYSTEM) 🔥
+# 🔥 MULTI-CLOUD UPLOADER (TELEGRAPH PRIORITY) 🔥
 def upload_image_sync(file_path):
-    # 1. Try Catbox.moe (Fastest & Never Blocked)
+    # 1. Try Telegraph FIRST (100% Supported by Telegram)
+    try:
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                "https://telegra.ph/upload", 
+                files={"file": ("photo.jpg", f, "image/jpeg")}
+            )
+        res = response.json()
+        if isinstance(res, list) and "src" in res[0]:
+            return "https://telegra.ph" + res[0]["src"]
+    except Exception as e:
+        print(f"Telegraph Error: {e}")
+
+    # 2. Try Catbox as Fallback (If Telegraph is down)
     try:
         with open(file_path, "rb") as f:
             response = requests.post(
@@ -88,19 +106,6 @@ def upload_image_sync(file_path):
     except Exception as e:
         print(f"Catbox Error: {e}")
 
-    # 2. Try Telegraph as Fallback
-    try:
-        with open(file_path, "rb") as f:
-            response = requests.post(
-                "https://telegra.ph/upload", 
-                files={"file": ("photo.jpg", f, "image/jpeg")}
-            )
-        res = response.json()
-        if isinstance(res, list) and "src" in res[0]:
-            return "https://telegra.ph" + res[0]["src"]
-    except Exception as e:
-        print(f"Telegraph Error: {e}")
-        
     return None
 
 async def upload_to_cloud(file_path):
@@ -114,17 +119,26 @@ async def set_ply_cmd(client, message):
         )
 
     mystic = await message.reply_text(f"{get_rand_emo()} 🌸 𝖯𝗋𝗈𝖼𝖾𝗌𝗌𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖯𝗁𝗈𝗍𝗈 𝖳𝗈 𝖱𝖤𝖥𝖫𝖤𝖷 𝖲𝖾𝗋𝗏𝖾𝗋...")
-    
+
     local_path = await client.download_media(message.reply_to_message)
     image_url = await upload_to_cloud(local_path)
-    
+
     if os.path.exists(local_path):
         os.remove(local_path)
-        
+
     if not image_url:
         return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖲𝖾𝗋𝗏𝖾𝗋𝗌 𝖬𝗂𝗀𝗁𝗍 𝖡𝖾 𝖣𝗈𝗐𝗇! 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
 
+    # Update Database
     await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": image_url}}, upsert=True)
+    
+    # 🔥 INSTANT CACHE SYNC 🔥 (No need to wait or restart)
+    try:
+        import time
+        _CACHE["url"] = image_url
+        _CACHE["time"] = time.time()
+    except:
+        pass
 
     await mystic.edit_text(
         f"{get_rand_emo()} 𝘠𝘢𝘺! 𝘊𝘶𝘴𝘵𝘰𝘮 𝘛𝘩𝘶𝘮𝘣𝘯𝘢𝘪𝘭 𝘚𝘦𝘵 𝘚𝘶𝘤𝘤𝘦𝘴𝘴𝘧𝘶𝘭𝘭𝘺! 𝘙𝘌𝘍𝘓𝘌𝘟 𝘚𝘺𝘴𝘵𝘦𝘮 𝘜𝘱𝘥𝘢𝘵𝘦𝘥. 😈\n\n(🔗 𝖴𝖱𝖫: {image_url})"
