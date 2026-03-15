@@ -14,13 +14,8 @@ from RessoMusic.utils.exceptions import AssistantErr
 from RessoMusic.utils.inline import aq_markup, close_markup, stream_markup
 from RessoMusic.utils.pastebin import AMBOTOPBin
 from RessoMusic.utils.stream.queue import put_queue, put_queue_index
-
-# 🔥 THUMBNAIL IMPORT FIX 🔥
 from RessoMusic.utils.thumbnails import gen_thumb, get_custom_thumb
 
-# ==========================================
-# 🦋 PREMIUM POOKIE EMOJIS FOR CAPTIONS
-# ==========================================
 P_EMOJIS = [
     "<emoji id=6151981777490548710>🦋</emoji>", "<emoji id=6152433938762570514>🎀</emoji>",
     "<emoji id=6152142357727811958>✨</emoji>", "<emoji id=6152420392435718199>🌸</emoji>",
@@ -34,28 +29,14 @@ P_EMOJIS = [
 def get_vip():
     return random.choice(P_EMOJIS)
 
-async def stream(
-    _,
-    mystic,
-    user_id,
-    result,
-    chat_id,
-    user_name,
-    original_chat_id,
-    video: Union[bool, str] = None,
-    streamtype: Union[bool, str] = None,
-    spotify: Union[bool, str] = None,
-    forceplay: Union[bool, str] = None,
-):
+async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_id, video: Union[bool, str] = None, streamtype: Union[bool, str] = None, spotify: Union[bool, str] = None, forceplay: Union[bool, str] = None):
     if not result:
         return
     if forceplay:
         await AMBOTOP.force_stop_stream(chat_id)
 
-    # 🌟 FETCH CUSTOM THUMBNAIL FIRST (Master Override)
+    # 🌟 MASTER OVERRIDE THUMBNAIL
     master_thumb = await get_custom_thumb()
-    
-    # Fallback to default config if nothing is set
     fallback_image = master_thumb if master_thumb else config.START_IMG_URL 
 
     if streamtype == "playlist":
@@ -86,16 +67,13 @@ async def stream(
                 await AMBOTOP.join_call(chat_id, original_chat_id, file_path, video=status, image=thumbnail)
                 await put_queue(chat_id, original_chat_id, file_path if direct else f"vid_{vidid}", title, duration_min, user_name, vidid, user_id, "video" if video else "audio", forceplay=forceplay)
                 
-                # Use Master Thumb or Gen Thumb
                 img = master_thumb if master_thumb else await gen_thumb(vidid)
                 button = stream_markup(_, chat_id)
-                run = await app.send_photo(
-                    original_chat_id,
-                    photo=img,
-                    has_spoiler=True,
-                    caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name),
-                    reply_markup=InlineKeyboardMarkup(button),
-                )
+                try:
+                    # ANTI-CRASH SEND PHOTO
+                    run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                except:
+                    run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "stream"
         if count == 0:
@@ -106,7 +84,10 @@ async def stream(
             car = os.linesep.join(msg.split(os.linesep)[:17]) if lines >= 17 else msg
             carbon = await Carbon.generate(car, randint(100, 10000000))
             upl = close_markup(_)
-            return await app.send_photo(original_chat_id, photo=carbon, caption=_["play_21"].format(position, link), reply_markup=upl)
+            try:
+                return await app.send_photo(original_chat_id, photo=carbon, caption=_["play_21"].format(position, link), reply_markup=upl)
+            except:
+                pass
 
     elif streamtype == "youtube":
         link = result["link"]
@@ -136,16 +117,12 @@ async def stream(
             await AMBOTOP.join_call(chat_id, original_chat_id, file_path, video=status, image=thumbnail)
             await put_queue(chat_id, original_chat_id, file_path if direct else f"vid_{vidid}", title, duration_min, user_name, vidid, user_id, "video" if video else "audio", forceplay=forceplay)
             
-            # 🌟 Use Master Thumb or Gen Thumb
             img = master_thumb if master_thumb else await gen_thumb(vidid)
             button = stream_markup(_, chat_id)
-            run = await app.send_photo(
-                original_chat_id,
-                photo=img,
-                has_spoiler=True,
-                caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+            try:
+                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+            except:
+                run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "stream"
 
@@ -164,15 +141,10 @@ async def stream(
             await AMBOTOP.join_call(chat_id, original_chat_id, file_path, video=None)
             await put_queue(chat_id, original_chat_id, file_path, title, duration_min, user_name, streamtype, user_id, "audio", forceplay=forceplay)
             button = stream_markup(_, chat_id)
-            
-            # 🌟 OVERRIDE CONFIG IMAGE WITH CUSTOM THUMB
-            run = await app.send_photo(
-                original_chat_id,
-                photo=fallback_image,
-                has_spoiler=True,
-                caption=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+            try:
+                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+            except:
+                run = await app.send_message(original_chat_id, text=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
@@ -181,7 +153,11 @@ async def stream(
         link = result["link"]
         title = (result["title"]).title()
         duration_min = result["dur"]
+        
+        # 🌟 JIOSAAVN THUMBNAIL FIX
+        thumbnail = result.get("thumb", fallback_image)
         status = True if video else None
+
         if await is_active_chat(chat_id):
             await put_queue(chat_id, original_chat_id, file_path, title, duration_min, user_name, streamtype, user_id, "video" if video else "audio")
             position = len(db.get(chat_id)) - 1
@@ -195,15 +171,10 @@ async def stream(
             if video:
                 await add_active_video_chat(chat_id)
             button = stream_markup(_, chat_id)
-            
-            # 🌟 OVERRIDE CONFIG IMAGE WITH CUSTOM THUMB
-            run = await app.send_photo(
-                original_chat_id,
-                photo=fallback_image,
-                has_spoiler=True,
-                caption=_["stream_1"].format(link, title[:23], duration_min, user_name),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+            try:
+                run = await app.send_photo(original_chat_id, photo=thumbnail, caption=_["stream_1"].format(link, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+            except:
+                run = await app.send_message(original_chat_id, text=_["stream_1"].format(link, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
@@ -228,16 +199,12 @@ async def stream(
             await AMBOTOP.join_call(chat_id, original_chat_id, file_path, video=status, image=thumbnail if thumbnail else None)
             await put_queue(chat_id, original_chat_id, f"live_{vidid}", title, duration_min, user_name, vidid, user_id, "video" if video else "audio", forceplay=forceplay)
             
-            # 🌟 Use Master Thumb or Gen Thumb
             img = master_thumb if master_thumb else await gen_thumb(vidid)
             button = stream_markup(_, chat_id)
-            run = await app.send_photo(
-                original_chat_id,
-                photo=img,
-                has_spoiler=True,
-                caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+            try:
+                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+            except:
+                run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
@@ -256,15 +223,10 @@ async def stream(
             await AMBOTOP.join_call(chat_id, original_chat_id, link, video=True if video else None)
             await put_queue_index(chat_id, original_chat_id, "index_url", title, duration_min, user_name, link, "video" if video else "audio", forceplay=forceplay)
             button = stream_markup(_, chat_id)
-            
-            # 🌟 OVERRIDE CONFIG IMAGE WITH CUSTOM THUMB
-            run = await app.send_photo(
-                original_chat_id,
-                photo=fallback_image,
-                has_spoiler=True,
-                caption=_["stream_2"].format(user_name),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+            try:
+                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_2"].format(user_name), reply_markup=InlineKeyboardMarkup(button))
+            except:
+                run = await app.send_message(original_chat_id, text=_["stream_2"].format(user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
             await mystic.delete()
