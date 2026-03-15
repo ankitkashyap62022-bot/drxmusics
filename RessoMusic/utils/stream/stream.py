@@ -1,8 +1,11 @@
 import os
 import random
+import asyncio
+import requests
 from random import randint
 from typing import Union
 
+from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup
 
 import config
@@ -15,6 +18,9 @@ from RessoMusic.utils.inline import aq_markup, close_markup, stream_markup
 from RessoMusic.utils.pastebin import AMBOTOPBin
 from RessoMusic.utils.stream.queue import put_queue, put_queue_index
 from RessoMusic.utils.thumbnails import gen_thumb, get_custom_thumb
+
+# 🔥 MONGODB DATABASE 🔥
+from RessoMusic.core.mongo import mongodb
 
 P_EMOJIS = [
     "<emoji id=6151981777490548710>🦋</emoji>", "<emoji id=6152433938762570514>🎀</emoji>",
@@ -29,6 +35,81 @@ P_EMOJIS = [
 def get_vip():
     return random.choice(P_EMOJIS)
 
+# ==========================================
+# 🎨 CUSTOM THUMBNAIL UPLOADER LOGIC
+# ==========================================
+custom_thumb_db = mongodb.custom_thumb
+
+def upload_image_sync(file_path):
+    # 1. Try Telegraph
+    try:
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                "https://telegra.ph/upload", 
+                files={"file": ("photo.jpg", f, "image/jpeg")}
+            )
+        res = response.json()
+        if isinstance(res, list) and "src" in res[0]:
+            return "https://telegra.ph" + res[0]["src"]
+    except Exception as e:
+        pass
+
+    # 2. Try Catbox as Fallback
+    try:
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                "https://catbox.moe/user/api.php",
+                data={"reqtype": "fileupload"},
+                files={"fileToUpload": f}
+            )
+        if response.status_code == 200 and response.text.startswith("http"):
+            return response.text.strip()
+    except Exception as e:
+        pass
+
+    return None
+
+async def upload_to_cloud(file_path):
+    return await asyncio.to_thread(upload_image_sync, file_path)
+
+@app.on_message(filters.command(["setply", "setphoto"]) & filters.user(config.OWNER_ID))
+async def set_ply_cmd(client, message):
+    if not message.reply_to_message or not message.reply_to_message.photo:
+        return await message.reply_text(
+            f"{get_vip()} ʙᴀʙʏ, ᴋɪsɪ ᴘʜᴏᴛᴏ ᴘᴀʀ ʀᴇᴘʟʏ ᴋᴀʀᴋᴇ /sᴇᴛᴘʜᴏᴛᴏ ʟɪᴋʜᴏ! 🎀"
+        )
+
+    mystic = await message.reply_text(f"{get_vip()} 🌸 ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ᴘʜᴏᴛᴏ ᴛᴏ ʀᴇғʟᴇx sᴇʀᴠᴇʀ...")
+
+    local_path = await client.download_media(message.reply_to_message)
+    image_url = await upload_to_cloud(local_path)
+
+    if os.path.exists(local_path):
+        os.remove(local_path)
+
+    if not image_url:
+        return await mystic.edit_text(f"{get_vip()} 🥺 ᴜᴘʟᴏᴀᴅ ғᴀɪʟᴇᴅ. sᴇʀᴠᴇʀs ᴍɪɢʜᴛ ʙᴇ ᴅᴏᴡɴ! ᴛʀʏ ᴀɢᴀɪɴ.")
+
+    # Update Database
+    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": image_url}}, upsert=True)
+    
+    # Update Cache instantly
+    try:
+        import time
+        from RessoMusic.utils.thumbnails import _CACHE
+        _CACHE["url"] = image_url
+        _CACHE["time"] = time.time()
+    except:
+        pass
+
+    await mystic.edit_text(
+        f"{get_vip()} ʏᴀʏ! ᴄᴜsᴛᴏᴍ ᴛʜᴜᴍʙɴᴀɪʟ sᴇᴛ sᴜᴄᴄᴇssғᴜʟʟʏ! ʀᴇғʟᴇx sʏsᴛᴇᴍ ᴜᴘᴅᴀᴛᴇᴅ. 😈\n\n(🔗 ᴜʀʟ: {image_url})"
+    )
+
+
+# ==========================================
+# 🚀 STREAM LOGIC WITH SPOILER
+# ==========================================
 async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_id, video: Union[bool, str] = None, streamtype: Union[bool, str] = None, spotify: Union[bool, str] = None, forceplay: Union[bool, str] = None):
     if not result:
         return
@@ -70,8 +151,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
                 img = master_thumb if master_thumb else await gen_thumb(vidid)
                 button = stream_markup(_, chat_id)
                 try:
-                    # ANTI-CRASH SEND PHOTO
-                    run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                    run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
                 except:
                     run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
                 db[chat_id][0]["mystic"] = run
@@ -85,7 +165,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
             carbon = await Carbon.generate(car, randint(100, 10000000))
             upl = close_markup(_)
             try:
-                return await app.send_photo(original_chat_id, photo=carbon, caption=_["play_21"].format(position, link), reply_markup=upl)
+                return await app.send_photo(original_chat_id, photo=carbon, caption=_["play_21"].format(position, link), reply_markup=upl, has_spoiler=True)
             except:
                 pass
 
@@ -99,7 +179,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
 
         current_queue = db.get(chat_id)
         if current_queue is not None and len(current_queue) >= 10:
-            return await app.send_message(original_chat_id, f"{get_vip()} You can't add more than 10 songs to the queue.")
+            return await app.send_message(original_chat_id, f"{get_vip()} ʏᴏᴜ ᴄᴀɴ'ᴛ ᴀᴅᴅ ᴍᴏʀᴇ ᴛʜᴀɴ 10 sᴏɴɢs ᴛᴏ ᴛʜᴇ ǫᴜᴇᴜᴇ.")
 
         try:
             file_path, direct = await YouTube.download(vidid, mystic, videoid=True, video=status)
@@ -120,7 +200,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
             img = master_thumb if master_thumb else await gen_thumb(vidid)
             button = stream_markup(_, chat_id)
             try:
-                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
             except:
                 run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
@@ -142,7 +222,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
             await put_queue(chat_id, original_chat_id, file_path, title, duration_min, user_name, streamtype, user_id, "audio", forceplay=forceplay)
             button = stream_markup(_, chat_id)
             try:
-                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
             except:
                 run = await app.send_message(original_chat_id, text=_["stream_1"].format(config.SUPPORT_GROUP, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
@@ -172,7 +252,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
                 await add_active_video_chat(chat_id)
             button = stream_markup(_, chat_id)
             try:
-                run = await app.send_photo(original_chat_id, photo=thumbnail, caption=_["stream_1"].format(link, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                run = await app.send_photo(original_chat_id, photo=thumbnail, caption=_["stream_1"].format(link, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
             except:
                 run = await app.send_message(original_chat_id, text=_["stream_1"].format(link, title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
@@ -183,7 +263,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
         vidid = result["vidid"]
         title = (result["title"]).title()
         thumbnail = result["thumb"]
-        duration_min = "Live Track"
+        duration_min = "ʟɪᴠᴇ ᴛʀᴀᴄᴋ"
         status = True if video else None
         if await is_active_chat(chat_id):
             await put_queue(chat_id, original_chat_id, f"live_{vidid}", title, duration_min, user_name, vidid, user_id, "video" if video else "audio")
@@ -202,7 +282,7 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
             img = master_thumb if master_thumb else await gen_thumb(vidid)
             button = stream_markup(_, chat_id)
             try:
-                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
+                run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
             except:
                 run = await app.send_message(original_chat_id, text=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
@@ -224,9 +304,10 @@ async def stream(_, mystic, user_id, result, chat_id, user_name, original_chat_i
             await put_queue_index(chat_id, original_chat_id, "index_url", title, duration_min, user_name, link, "video" if video else "audio", forceplay=forceplay)
             button = stream_markup(_, chat_id)
             try:
-                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_2"].format(user_name), reply_markup=InlineKeyboardMarkup(button))
+                run = await app.send_photo(original_chat_id, photo=fallback_image, caption=_["stream_2"].format(user_name), reply_markup=InlineKeyboardMarkup(button), has_spoiler=True)
             except:
                 run = await app.send_message(original_chat_id, text=_["stream_2"].format(user_name), reply_markup=InlineKeyboardMarkup(button))
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
             await mystic.delete()
+            
