@@ -1,9 +1,12 @@
 from typing import Union
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from config import SUPPORT_CHANNEL
 
 # ☠️ REFLEX SYSTEM LINKS ☠️
 MY_LORD_URL = "https://t.me/MONSTER_FUCK_BITCHES"
 SUPPORT_URL = "https://t.me/FUCK_BY_REFLEX"
+# Bot username fetch logic for 'Add to Group' button
+BOT_USERNAME = "YourBotUsername" # Replace with your actual bot username if possible, or we will use parameter
 
 def track_markup(_, videoid, user_id, channel, fplay):
     buttons = [
@@ -36,8 +39,8 @@ def stream_markup(_, videoid, chat_id):
             InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close"),
@@ -58,8 +61,8 @@ def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
@@ -79,8 +82,8 @@ def livestream_markup(_, videoid, user_id, mode, channel, fplay):
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(
@@ -141,8 +144,8 @@ def queue_markup(
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ]
     ]
     dur = [
@@ -163,8 +166,8 @@ def queue_markup(
             ),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ]
     ]
     upl = InlineKeyboardMarkup(not_dur if DURATION == "Unknown" else dur)
@@ -196,8 +199,12 @@ def aq_markup(_, chat_id):
             InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
         [
-            InlineKeyboardButton(text="🌸 ᴍ ʏ  ᴄ ʟ ᴜ ʙ 🌸", url=SUPPORT_URL),
-            InlineKeyboardButton(text="😈 ᴍ ʏ  ʟ ᴏ ʀ ᴅ 😈", url=MY_LORD_URL),
+            # 🔥 THE MAGIC BUTTON INJECTED HERE 🔥
+            InlineKeyboardButton(text="✨ ᴛ ᴀ ᴘ  ᴛ ᴏ  s ᴇ ᴇ  ᴍ ᴀ ɢ ɪ ᴄ ✨", url=f"https://t.me/AnuxMusicBot?startgroup=true"),
+        ],
+        [
+            InlineKeyboardButton(text="ᴍ ʏ  ᴄ ʟ ᴜ ʙ", url=SUPPORT_URL),
+            InlineKeyboardButton(text="ᴍ ʏ  ʟ ᴏ ʀ ᴅ", url=MY_LORD_URL),
         ],
         [
             InlineKeyboardButton(text="🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close"),
