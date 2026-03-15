@@ -18,7 +18,7 @@ MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://Billa:ZARA838180@billa.0srz
 
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 600))
 
-# Chat id of a group for logging bot's activities (Isme apne Log Group ki ID dal dena baad me, jaise -100123456)
+# Chat id of a group for logging bot's activities 
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", -1003201139840))
 
 # 👑 SUPREME COMMANDER ID
@@ -28,7 +28,7 @@ OWNER_ID = int(getenv("OWNER_ID", 7580691483))
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
-# ⚙️ Auto-Update Repo (Ise aise hi rehne de, backend ke liye zaroori hai)
+# ⚙️ Auto-Update Repo
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
     "https://github.com/hkmusic/drxmusic",
@@ -48,7 +48,7 @@ AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
 PRIVACY_LINK = getenv("PRIVACY_LINK", "https://files.catbox.moe/jyeumn.jpg")
 
 # Music Api
-API_URL = getenv("API_URL", 'https://api.thequickearn.xyz') #youtube song url
+API_URL = getenv("API_URL", 'https://api.thequickearn.xyz') 
 VIDEO_API_URL = getenv("VIDEO_API_URL", 'https://api.video.thequickearn.xyz')
 API_KEY = getenv("API_KEY", None)
 
@@ -77,19 +77,23 @@ votemode = {}
 autoclean = []
 confirmer = {}
 
-# 🎨 BRANDING IMAGES (Tum inhe baad me apne hisaab se change kar sakti ho)
+# 🎨 BRANDING IMAGES (Start / Ping Video)
 START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/nzl4fx.mp4")
 PING_IMG_URL = getenv("PING_IMG_URL", "https://files.catbox.moe/nzl4fx.mp4")
 PLAYLIST_IMG_URL = "https://files.catbox.moe/nzl4fx.mp4"
 STATS_IMG_URL = "https://files.catbox.moe/nzl4fx.mp4"
-TELEGRAM_AUDIO_URL = "https://telegra.ph/file/8234d704952738ebcda7f.jpg"
-TELEGRAM_VIDEO_URL = "https://telegra.ph/file/8d02ff3bde400e465219a.jpg"
-STREAM_IMG_URL = "https://telegra.ph/file/e24f4a5f695ec5576a8f3.jpg"
-SOUNCLOUD_IMG_URL = "https://telegra.ph/file/7645d1e04021323c21db9.jpg"
-YOUTUBE_IMG_URL = "https://telegra.ph/file/76d29aa31c40a7f026d7e.jpg"
-SPOTIFY_ARTIST_IMG_URL = "https://telegra.ph/file/b7758d4e1bc32aa9fb6ec.jpg"
-SPOTIFY_ALBUM_IMG_URL = "https://telegra.ph/file/60ed85638e00df10985db.jpg"
-SPOTIFY_PLAYLIST_IMG_URL = "https://telegra.ph/file/f4edfbd83ec3150284aae.jpg"
+
+# 🔥 SAFE FALLBACKS (Purane Owner ke sabhi links DELETE kar diye!)
+# Note: Ye tabhi use honge jab /setply set nahi hoga, warna /setply wali photo aayegi.
+FALLBACK_IMG = "https://telegra.ph/file/82b13eddfc5eb944b76e2.jpg"
+TELEGRAM_AUDIO_URL = getenv("TELEGRAM_AUDIO_URL", FALLBACK_IMG)
+TELEGRAM_VIDEO_URL = getenv("TELEGRAM_VIDEO_URL", FALLBACK_IMG)
+STREAM_IMG_URL = getenv("STREAM_IMG_URL", FALLBACK_IMG)
+SOUNCLOUD_IMG_URL = getenv("SOUNCLOUD_IMG_URL", FALLBACK_IMG)
+YOUTUBE_IMG_URL = getenv("YOUTUBE_IMG_URL", FALLBACK_IMG)
+SPOTIFY_ARTIST_IMG_URL = getenv("SPOTIFY_ARTIST_IMG_URL", FALLBACK_IMG)
+SPOTIFY_ALBUM_IMG_URL = getenv("SPOTIFY_ALBUM_IMG_URL", FALLBACK_IMG)
+SPOTIFY_PLAYLIST_IMG_URL = getenv("SPOTIFY_PLAYLIST_IMG_URL", FALLBACK_IMG)
 
 def time_to_seconds(time):
     stringt = str(time)
