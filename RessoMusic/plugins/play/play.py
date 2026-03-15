@@ -61,13 +61,13 @@ def get_custom_buttons():
         [InlineKeyboardButton(f"ᴍ ʏ . ᴄ ʟ ᴜ ʙ", url="https://t.me/FUCK_BY_REFLEX")],
         [
             InlineKeyboardButton(f"ᴍ ʏ . ʟ ᴏ ʀ ᴅ", url="https://t.me/MONSTER_FUCK_BITCHES"),
-            InlineKeyboardButton(f"ᴘᴏᴡᴇʀᴇᴅ ʙʏ", url="https://t.me/MONSTER_FUCK_BITCHES")
+            InlineKeyboardButton(f"ᴘ ᴏ ᴡ ᴇ ʀ ᴇ ᴅ  ʙ ʏ", url="https://t.me/MONSTER_FUCK_BITCHES")
         ],
         [InlineKeyboardButton(f"🗑 ᴄ ʟ ᴏ s ᴇ 🗑", callback_data="close")]
     ]
 
 # ==========================================
-# 🎨 CUSTOM THUMBNAIL LOGIC (/setply)
+# 🎨 CUSTOM THUMBNAIL LOGIC
 # ==========================================
 custom_thumb_db = mongodb.custom_thumb
 
@@ -77,72 +77,6 @@ async def get_cthumb():
         return data["url"] if data else None
     except:
         return None
-
-# 🔥 MULTI-CLOUD UPLOADER (TELEGRAPH PRIORITY) 🔥
-def upload_image_sync(file_path):
-    # 1. Try Telegraph FIRST (100% Supported by Telegram)
-    try:
-        with open(file_path, "rb") as f:
-            response = requests.post(
-                "https://telegra.ph/upload", 
-                files={"file": ("photo.jpg", f, "image/jpeg")}
-            )
-        res = response.json()
-        if isinstance(res, list) and "src" in res[0]:
-            return "https://telegra.ph" + res[0]["src"]
-    except Exception as e:
-        print(f"Telegraph Error: {e}")
-
-    # 2. Try Catbox as Fallback (If Telegraph is down)
-    try:
-        with open(file_path, "rb") as f:
-            response = requests.post(
-                "https://catbox.moe/user/api.php",
-                data={"reqtype": "fileupload"},
-                files={"fileToUpload": f}
-            )
-        if response.status_code == 200 and response.text.startswith("http"):
-            return response.text.strip()
-    except Exception as e:
-        print(f"Catbox Error: {e}")
-
-    return None
-
-async def upload_to_cloud(file_path):
-    return await asyncio.to_thread(upload_image_sync, file_path)
-
-@app.on_message(filters.command("setply") & filters.user(config.OWNER_ID))
-async def set_ply_cmd(client, message):
-    if not message.reply_to_message or not message.reply_to_message.photo:
-        return await message.reply_text(
-            f"{get_rand_emo()} 𝘉𝘢𝘣𝘺, 𝘒𝘪𝘴𝘪 𝘗𝘩𝘰𝘵𝘰 𝘗𝘢𝘳 𝘙𝘦𝘱𝘭𝘺 𝘒𝘢𝘳𝘬𝘦 /𝘴𝘦𝘵𝘱𝘭𝘺 𝘓𝘪𝘬𝘩𝘰! 🎀"
-        )
-
-    mystic = await message.reply_text(f"{get_rand_emo()} 🌸 𝖯𝗋𝗈𝖼𝖾𝗌𝗌𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖯𝗁𝗈𝗍𝗈 𝖳𝗈 𝖱𝖤𝖥𝖫𝖤𝖷 𝖲𝖾𝗋𝗏𝖾𝗋...")
-
-    local_path = await client.download_media(message.reply_to_message)
-    image_url = await upload_to_cloud(local_path)
-
-    if os.path.exists(local_path):
-        os.remove(local_path)
-
-    if not image_url:
-        return await mystic.edit_text(f"{get_rand_emo()} 🥺 𝖴𝗉𝗅𝗈𝖺𝖽 𝖥𝖺𝗂𝗅𝖾𝖽. 𝖲𝖾𝗋𝗏𝖾𝗋𝗌 𝖬𝗂𝗀𝗁𝗍 𝖡𝖾 𝖣𝗈𝗐𝗇! 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇.")
-
-    # Update Database
-    await custom_thumb_db.update_one({"_id": "custom_thumbnail"}, {"$set": {"url": image_url}}, upsert=True)
-    
-    # 🔥 INSTANT CACHE SYNC 🔥 (No need to wait or restart)
-    try:
-        import time
-        _CACHE["url"] = image_url
-        _CACHE["time"] = time.time()
-    except:
-        pass
-
-    await mystic.edit_text(
-        f"{get_rand_emo()} 𝘠𝘢𝘺! 𝘊𝘶𝘴𝘵𝘰𝘮 𝘛𝘩𝘶𝘮𝘣𝘯𝘢𝘪𝘭 𝘚𝘦𝘵 𝘚𝘶𝘤𝘤𝘦𝘴𝘴𝘧𝘶𝘭𝘭𝘺! 𝘙𝘌𝘍𝘓𝘌𝘟 𝘚𝘺𝘴𝘵𝘦𝘮 𝘜𝘱𝘥𝘢𝘵𝘦𝘥. 😈\n\n(🔗 𝖴𝖱𝖫: {image_url})"
-    )
 
 # ==========================================
 # 🎵 JIOSAAVN API LOGIC (RESTORED!)
@@ -189,7 +123,7 @@ async def jiosaavn_play_logic(query):
 async def play_commnd(client, message: Message, _, chat_id, video, channel, playmode, url, fplay):
 
     mystic = await message.reply_text(
-        f"{get_rand_emo()} 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖸𝗈𝗎𝗋 𝖲𝗈𝗇𝗀 𝖡𝖺𝖻𝗒... 𝖯𝗅𝖾𝖺𝗌𝖾 𝖶𝖺𝗂𝗍 𝖬𝗒 𝖫𝗈𝗋𝖽 😈"
+        f"{get_rand_emo()} sᴇᴀʀᴄʜɪɴɢ ʏᴏᴜʀ sᴏɴɢ ʙᴀʙʏ... ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴍʏ ʟᴏʀᴅ 😈"
     )
 
     plist_id = None
@@ -205,7 +139,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
 
     if audio_telegram:
         if audio_telegram.file_size > 104857600:
-            return await mystic.edit_text(f"{get_rand_emo()} 𝖥𝗂𝗅𝖾 𝖳𝗈𝗈 𝖡𝗂𝗀 𝖡𝖺𝖻𝗒! 𝖲𝖾𝗇𝖽 𝖲𝗆𝖺𝗅𝗅𝖾𝗋 𝖮𝗇𝖾. 🥺")
+            return await mystic.edit_text(f"{get_rand_emo()} ғɪʟᴇ ᴛᴏᴏ ʙɪɢ ʙᴀʙʏ! sᴇɴᴅ sᴍᴀʟʟᴇʀ ᴏɴᴇ. 🥺")
         file_path = await Telegram.get_filepath(audio=audio_telegram)
         if await Telegram.download(_, message, mystic, file_path):
             message_link = await Telegram.get_link(message)
@@ -215,7 +149,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
             try:
                 await stream(_, mystic, user_id, details, chat_id, user_name, message.chat.id, streamtype="telegram", forceplay=fplay)
             except Exception as e:
-                return await mystic.edit_text(f"{get_rand_emo()} 𝖤𝗋𝗋𝗈𝗋 𝖮𝖼𝖼𝗎𝗋𝖾𝖽: {e}")
+                return await mystic.edit_text(f"{get_rand_emo()} ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ: {e}")
             return await mystic.delete()
         return
 
@@ -224,7 +158,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
             try:
                 details, track_id = await YouTube.track(url)
             except:
-                return await mystic.edit_text(f"{get_rand_emo()} 𝖲𝗈𝗇𝗀 𝖭𝗈𝗍 𝖥𝗈𝗎𝗇𝖽 𝖡𝖺𝖻𝗒! 🥺")
+                return await mystic.edit_text(f"{get_rand_emo()} sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ ʙᴀʙʏ! 🥺")
             streamtype = "youtube"
             details["thumb"] = cthumb if cthumb else details["thumb"]
             cap = f"{get_rand_emo()} **{details['title']}**"
@@ -232,7 +166,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
     else:
         if len(message.command) < 2:
             return await mystic.edit_text(
-                f"{get_rand_emo()} 𝘉𝘢𝘣𝘺, 𝘗𝘭𝘦𝘢𝘴𝘦 𝘎𝘪𝘷𝘦 𝘈 𝘚𝘰𝘯𝘨 𝘕𝘢𝘮𝘦 𝘛𝘰 𝘗𝘭𝘢𝘺! 🎀",
+                f"{get_rand_emo()} ʙᴀʙʏ, ᴘʟᴇᴀsᴇ ɢɪᴠᴇ ᴀ sᴏɴɢ ɴᴀᴍᴇ ᴛᴏ ᴘʟᴀʏ! 🎀",
                 reply_markup=InlineKeyboardMarkup(get_custom_buttons())
             )
         slider = True
@@ -264,14 +198,14 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
             details, track_id = await YouTube.track(query)
             details["thumb"] = cthumb if cthumb else details["thumb"]
         except:
-            return await mystic.edit_text(f"{get_rand_emo()} 𝖲𝗈𝗇𝗀 𝖭𝗈𝗍 𝖥𝗈𝗎𝗇𝖽 𝖡𝖺𝖻𝗒! 🥺")
+            return await mystic.edit_text(f"{get_rand_emo()} sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ ʙᴀʙʏ! 🥺")
         streamtype = "youtube"
 
     if str(playmode) == "Direct":
         try:
             await stream(_, mystic, user_id, details, chat_id, user_name, message.chat.id, video=video, streamtype=streamtype, spotify=spotify, forceplay=fplay)
         except Exception as e:
-            return await mystic.edit_text(f"{get_rand_emo()} 𝖤𝗋𝗋𝗈𝗋 𝖮𝖼𝖼𝗎𝗋𝖾𝖽: {e}")
+            return await mystic.edit_text(f"{get_rand_emo()} ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ: {e}")
         await mystic.delete()
         return await play_logs(message, streamtype=streamtype)
     else:
@@ -280,7 +214,7 @@ async def play_commnd(client, message: Message, _, chat_id, video, channel, play
             await message.reply_photo(
                 photo=cthumb if cthumb else details["thumb"],
                 has_spoiler=True,
-                caption=f"{get_rand_emo()} 𝖲𝗈𝗇𝗀: **{details['title'].title()}**\n⏳ 𝖣𝗎𝗋𝖺𝗍𝗂𝗈𝗇: {details['duration_min']}",
+                caption=f"{get_rand_emo()} **s ᴏ ɴ ɢ :** {details['title'].title()}\n⏳ **ᴅ ᴜ ʀ ᴀ ᴛ ɪ ᴏ ɴ :** {details['duration_min']}",
                 reply_markup=InlineKeyboardMarkup(get_custom_buttons())
             )
             return await play_logs(message, streamtype=f"Searched on Youtube")
@@ -291,3 +225,4 @@ async def anonymous_check(client, CallbackQuery):
         await CallbackQuery.answer("» ʀᴇᴠᴇʀᴛ ʙᴀᴄᴋ ᴛᴏ ᴜsᴇʀ ᴀᴄᴄᴏᴜɴᴛ ʙᴀʙʏ 🎀", show_alert=True)
     except:
         pass
+        
