@@ -26,8 +26,8 @@ def track_markup(_, videoid, user_id, channel, fplay):
     ]
     return buttons
 
-
-
+# 🔥 FIXED SYNTAX ERROR (Dangling buttons safely put inside panel_markup)
+def panel_markup(_, chat_id):
     buttons = [
         [
             InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
@@ -36,15 +36,14 @@ def track_markup(_, videoid, user_id, channel, fplay):
             InlineKeyboardButton(text="‣‣I", callback_data=f"ADMIN Skip|{chat_id}"),
             InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
-
         [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")],
     ]
     return buttons
 
 
+# ☠️ THE GHOST IS BUSTED HERE! REFLEX SYSTEM INJECTED! (NO EMOJIS) ☠️
 def stream_markup(_, chat_id):
     buttons = [
-
         [
             InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
             InlineKeyboardButton(text="II", callback_data=f"ADMIN Pause|{chat_id}"),
@@ -52,12 +51,13 @@ def stream_markup(_, chat_id):
             InlineKeyboardButton(text="‣‣I", callback_data=f"ADMIN Skip|{chat_id}"),
             InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
         ],
-        [InlineKeyboardButton("˹ϻʏ ʜᴏϻє˼", url=f"http://t.me/itzdhruv1060"),
-         InlineKeyboardButton("˹ᴏᴡɴєʀ˼", url=f"http://t.me/itzdhruv"),
-
+        [
+            InlineKeyboardButton(text="ᴍ ʏ . ᴄ ʟ ᴜ ʙ", url="https://t.me/FUCK_BY_REFLEX"),
+            InlineKeyboardButton(text="ᴍ ʏ . ʟ ᴏ ʀ ᴅ", url="https://t.me/MONSTER_FUCK_BITCHES"),
         ],
-        
-        [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")],
+        [
+            InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")
+        ],
     ]
     return buttons
 
@@ -131,4 +131,3 @@ def slider_markup(_, videoid, user_id, query, query_type, channel, fplay):
         ],
     ]
     return buttons
-              
