@@ -77,15 +77,15 @@ votemode = {}
 autoclean = []
 confirmer = {}
 
-# 🎨 BRANDING IMAGES (Start / Ping Video)
-START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/nzl4fx.mp4")
-PING_IMG_URL = getenv("PING_IMG_URL", "https://files.catbox.moe/nzl4fx.mp4")
-PLAYLIST_IMG_URL = "https://files.catbox.moe/nzl4fx.mp4"
-STATS_IMG_URL = "https://files.catbox.moe/nzl4fx.mp4"
+# 🔥 SAFE FALLBACKS (Teri Custom Photo Yaha Set Hai!)
+FALLBACK_IMG = "https://files.catbox.moe/s8bo2x.jpg"
 
-# 🔥 SAFE FALLBACKS (Purane Owner ke sabhi links DELETE kar diye!)
-# Note: Ye tabhi use honge jab /setply set nahi hoga, warna /setply wali photo aayegi.
-FALLBACK_IMG = "https://telegra.ph/file/82b13eddfc5eb944b76e2.jpg"
+# 🎨 BRANDING IMAGES (Sab jagah teri photo override karegi)
+START_IMG_URL = getenv("START_IMG_URL", FALLBACK_IMG)
+PING_IMG_URL = getenv("PING_IMG_URL", FALLBACK_IMG)
+PLAYLIST_IMG_URL = FALLBACK_IMG
+STATS_IMG_URL = FALLBACK_IMG
+
 TELEGRAM_AUDIO_URL = getenv("TELEGRAM_AUDIO_URL", FALLBACK_IMG)
 TELEGRAM_VIDEO_URL = getenv("TELEGRAM_VIDEO_URL", FALLBACK_IMG)
 STREAM_IMG_URL = getenv("STREAM_IMG_URL", FALLBACK_IMG)
